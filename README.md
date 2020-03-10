@@ -20,6 +20,7 @@ Currently each and every request to an endpoint makes an API request to google a
 [wrangler](https://github.com/cloudflare/wrangler)
 
 * Add wrangler.toml file.
+* Add google api key with the command `wrangler secret put GOOGLE_API_KEY`
 * `wrangler publish`
 
 #### Serverless

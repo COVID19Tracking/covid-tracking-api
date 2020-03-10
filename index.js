@@ -3,7 +3,7 @@ const { handleRequest } = require('./response')
 const sheets = {
   app: 'sheets',
   worksheetId: '18oVRrHj3c183mHmq3m89_163yuYltLNlOmPerQ18E8w',
-  key: '',
+  key: GOOGLE_API_KEY,
 }
 const redirectMap = new Map([
   ['/', 'http://covidtracking.com'],
