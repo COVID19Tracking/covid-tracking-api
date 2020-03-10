@@ -6,7 +6,7 @@ const dataInfo = {
   headers: {
     'Access-Control-Allow-Origin': '*',
     'Content-Type': 'application/json;charset=UTF-8',
-    // 'Cache-Control': 'max-age=86400',
+    'Cache-Control': 'public, max-age=3600',
   },
 }
 
