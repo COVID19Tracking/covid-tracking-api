@@ -7,7 +7,6 @@ const sheets = {
 }
 const redirectMap = new Map([
   ['/', 'http://covidtracking.com'],
-  ['/cape', 'https://www.cape.io'],
   ['/states', { ...sheets, sheetName: 'States current' }],
   ['/states/daily', { ...sheets, sheetName: 'States daily 4 pm ET' }],
   ['/states/info', { ...sheets, sheetName: 'States' }],
