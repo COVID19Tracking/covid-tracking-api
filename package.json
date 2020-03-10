@@ -1,0 +1,19 @@
+{
+  "private": true,
+  "name": "covid-tracking-api",
+  "version": "1.0.0",
+  "description": "A Cloudflare Workers that cleans up google sheets",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "format": "prettier --write '**/*.{js,css,json,md}'"
+  },
+  "author": "Kai Curry <kai@cape.io>",
+  "license": "MIT",
+  "devDependencies": {
+    "prettier": "^1.18.2"
+  },
+  "dependencies": {
+    "lodash": "^4.17.15"
+  }
+}
