@@ -5,8 +5,8 @@ function getVal(value) {
   if (value === 'N') return false
   if (value === 'Y') return true
   if (value.match(/^(\d+|\d{1,3}(,\d{3})*)(\.\d+)?$/)) return Number(value.replace(/,/g, ''))
-  if (isNaN(value)) return value
-  return Number(value)
+  if (!isNaN(value)) return Number(value)
+  return value
 }
 
 const getVals = _.map(_.map(getVal))
