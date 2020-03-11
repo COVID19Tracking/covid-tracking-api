@@ -6,16 +6,16 @@ A [Cloudflare Worker](https://developers.cloudflare.com/workers/) that makes a r
 
 The default response is JSON. If you'd like CSV just append `.csv` at the end of the url. For example https://covid.cape.io/states.csv
 
-* States current - https://covid.cape.io/states
-* States daily 4 pm ET - https://covid.cape.io/states/daily
-* States info - https://covid.cape.io/states/info
-* US current - https://covid.cape.io/us
-* US daily - https://covid.cape.io/us/daily
-* Counties- https://covid.cape.io/counties
+* States current - http://covidtracking.com/api/states
+* States daily 4 pm ET - http://covidtracking.com/api/states/daily
+* States info - http://covidtracking.com/api/states/info
+* US current - http://covidtracking.com/api/us
+* US daily - http://covidtracking.com/api/us/daily
+* Counties- http://covidtracking.com/api/counties
 
 ## How
 
-Currently each and every request to an endpoint makes an API request to google and cleans it up before returning results. A cache can be configured if desired.
+Currently each and every request is passed through netlify to cloudflare and then to an endpoint that makes an API request to google and then cleans it up and decides format before returning results. A cache can be configured if desired but is not currently enabled.
 
 #### Easy Deploy w/ Wrangler
 
