@@ -1,21 +1,29 @@
 const _ = require('lodash/fp')
+const jsonexport = require('jsonexport')
 const { sheetVals } = require('./sheets')
 
-const dataInfo = {
+const resInit = _.defaultsDeep({
   status: 200,
   headers: {
     'Access-Control-Allow-Origin': '*',
     'Content-Type': 'application/json;charset=UTF-8',
     'Cache-Control': 'public, max-age=3600',
   },
-}
+})
 
-const dataResponse = (res, init = {}) => new Response(JSON.stringify(res), {...dataInfo, ...init})
+const dataResponse = (res, init = {}) => new Response(JSON.stringify(res), resInit(init))
+const csvResponse = (res, pathname) => new Response(res, resInit({
+  headers: {
+    'Content-Type': 'text/csv;charset=UTF-8',
+    'Content-Disposition': `filename=${pathname.substr(1).replace(/\//g, '-')}`,
+  }
+}))
 
 const handleRequest = (redirectMap, request) => {
   const { url } = request
   const { origin, pathname } = new URL(url)
-  const redirectLocation = redirectMap && redirectMap.get(pathname)
+  const [path, ext] = pathname.split('.')
+  const redirectLocation = redirectMap && redirectMap.get(path)
   if (!redirectLocation) {
     const res = { error: 'NOT FOUND', pathname }
     return dataResponse(res, { status: 404 })
@@ -26,7 +34,19 @@ const handleRequest = (redirectMap, request) => {
     return Response.redirect(`${origin}/${redirectLocation}`, 302)
   }
   if (redirectLocation.app === 'sheets') {
-    return sheetVals(redirectLocation).then(dataResponse)
+    function sheetResponse(res) {
+      if (ext === 'csv') {
+        return new Promise((resolve, reject) => {
+          jsonexport(res, (err, csv) => {
+            if (err) return resolve(new Response(err.stack || err))
+            return resolve(csvResponse(csv, pathname))
+          })
+        })
+      }
+      // txt or html could be added.
+      return dataResponse(res)
+    }
+    return sheetVals(redirectLocation).then(sheetResponse)
   }
   return fetch(request)
 }

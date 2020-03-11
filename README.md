@@ -2,7 +2,9 @@
 
 A [Cloudflare Worker](https://developers.cloudflare.com/workers/) that makes a requests to get the sheet info and then cleans it up a bit and returns an array of values.
 
-## Initial Basic API - JSON Endpoints
+## Initial Basic API
+
+The default response is JSON. If you'd like CSV just append `.csv` at the end of the url. For example https://covid.cape.io/states.csv
 
 * States current - https://covid.cape.io/states
 * States daily 4 pm ET - https://covid.cape.io/states/daily

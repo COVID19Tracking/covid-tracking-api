@@ -2,6 +2,11 @@
 # yarn lockfile v1
 
 
+jsonexport@^2.4.1:
+  version "2.4.1"
+  resolved "https://registry.yarnpkg.com/jsonexport/-/jsonexport-2.4.1.tgz#2148920875c6e0049d188e5e2da356a79cca947e"
+  integrity sha512-8O+yka4X6KxVMJDnzQh7NaoqgNX96gMbX7jb2JMb3CfxXfEvPpRpYyb+2/HpKjxR7Abr7zlvqxV4/cpqmExPSw==
+
 lodash@^4.17.15:
   version "4.17.15"
   resolved "https://registry.yarnpkg.com/lodash/-/lodash-4.17.15.tgz#b447f6670a0455bbfeedd11392eff330ea097548"
