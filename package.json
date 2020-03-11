@@ -9,7 +9,7 @@
     "format": "prettier --write '**/*.{js,css,json,md}'"
   },
   "author": "Kai Curry <kai@cape.io>",
-  "license": "MIT",
+  "license": "Apache-2.0",
   "devDependencies": {
     "prettier": "^1.18.2"
   },
