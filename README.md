@@ -4,7 +4,7 @@ A [Cloudflare Worker](https://developers.cloudflare.com/workers/) that makes a r
 
 ## Initial Basic API
 
-The default response is JSON. If you'd like CSV just append `.csv` at the end of the url. For example https://covid.cape.io/states.csv
+The default response is JSON. If you'd like CSV just append `.csv` at the end of the url. For example https://covidtracking.com/api/states.csv
 
 * States current - http://covidtracking.com/api/states
 * States daily 4 pm ET - http://covidtracking.com/api/states/daily
