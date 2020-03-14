@@ -13,6 +13,12 @@ const redirectMap = new Map([
   ['/us', { ...sheets, sheetName: 'US current' }],
   ['/us/daily', { ...sheets, sheetName: 'US daily 4 pm ET' }],
   ['/counties', { ...sheets, sheetName: 'Counties' }],
+  ['/urls', {
+    app: 'yaml',
+    url: 'https://raw.githubusercontent.com/COVID19Tracking/covid-tracking/master/urls.yaml',
+    multi: true,
+    args: { json: true } // Duplicate keys will override values rather than throwing an error.
+  }]
 ])
 
 function handler(request) {

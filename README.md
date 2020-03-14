@@ -12,6 +12,7 @@ The default response is JSON. If you'd like CSV just append `.csv` at the end of
 * US current - http://covidtracking.com/api/us
 * US daily - http://covidtracking.com/api/us/daily
 * Counties- http://covidtracking.com/api/counties
+* Tracker URLs - http://covidtracking.com/api/urls
 
 ## How
 
@@ -29,3 +30,7 @@ Currently each and every request is passed through netlify to cloudflare and the
 #### Serverless
 
 To deploy using serverless add a [`serverless.yml`](https://serverless.com/framework/docs/providers/cloudflare/) file.
+
+#### Testing locally
+`yarn global add cloudflare-work-local`
+`wrangler build && cloudflare-worker-local worker/script.js covid.cape.io 3000`
