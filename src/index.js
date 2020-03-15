@@ -12,7 +12,7 @@ const graphQLOptions = {
   typeDefs,
   resolvers,
   baseEndpoint: '/graphql',
-  playgroundEndpoint: '/__graphql',
+  playgroundEndpoint: '/playground',
   app: 'apollo',
   cors: false,
   kvCache: false,

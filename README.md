@@ -14,6 +14,11 @@ The default response is JSON. If you'd like CSV just append `.csv` at the end of
 * Counties- http://covidtracking.com/api/counties
 * Tracker URLs - http://covidtracking.com/api/urls
 
+## GraphQL API
+
+* Playground - http://covidtracking.com/api/playground
+* GraphQL API - http://covidtracking.com/api/graphql
+
 ## How
 
 Currently each and every request is passed through netlify to cloudflare and then to an endpoint that makes an API request to google and then cleans it up and decides format before returning results. A cache can be configured if desired but is not currently enabled.
