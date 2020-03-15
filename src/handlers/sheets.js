@@ -13,12 +13,12 @@ const getVals = _.map(_.map(getVal))
 
 const fixVals = _.flow(
   _.get('values'),
-  ([keys, ...values]) => _.map(_.zipObject(_.map(_.camelCase, keys)), getVals(values))
+  ([keys, ...values]) => _.map(_.zipObject(_.map(_.camelCase, keys)), getVals(values)),
 )
 
 function sheetVals({ worksheetId, sheetName, key }) {
   return fetch(`https://sheets.googleapis.com/v4/spreadsheets/${worksheetId}/values/${sheetName}?key=${key}`)
-    .then(res => res.json())
+    .then((res) => res.json())
     .then(fixVals)
 }
 

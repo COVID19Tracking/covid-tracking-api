@@ -1,4 +1,6 @@
-const html = baseEndpoint => `
+const { htmlResponse } = require('./responses')
+
+module.exports = ({ baseEndpoint }) => htmlResponse(`
 <!DOCTYPE html>
 <html>
 <head>
@@ -535,9 +537,4 @@ const html = baseEndpoint => `
   </script>
 </body>
 </html>
-`
-
-const headers = { 'Content-Type': 'text/html' }
-const handler = (request, { baseEndpoint }) => new Response(html(baseEndpoint), { headers })
-
-module.exports = handler
+`)
