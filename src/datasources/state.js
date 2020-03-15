@@ -54,7 +54,7 @@ const statesReducer = ([totals, info, daily, urls]) => _.values(_.mergeAll([
 class StateAPI extends RESTDataSource {
   constructor() {
     super()
-    this.baseURL = 'https://covid.cape.io/'
+    this.baseURL = 'https://covidtracking.com/api/'
   }
 
   getAllStates() {
