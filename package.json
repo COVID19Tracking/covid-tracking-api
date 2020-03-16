@@ -21,6 +21,8 @@
   "dependencies": {
     "apollo-datasource-rest": "^0.8.0",
     "apollo-server-cloudflare": "^2.11.0",
+    "date-fns": "^2.11.0",
+    "date-fns-tz": "^1.0.10",
     "graphql-type-json": "^0.3.1",
     "js-yaml": "^3.13.1",
     "jsonexport": "^2.4.1",
