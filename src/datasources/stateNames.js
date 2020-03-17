@@ -65,6 +65,7 @@ const states = {
 
 const stateNames = {
   'Washington DC': 'DC',
+  'Commonwealth of the Northern Mariana Islands': 'MP',
 }
 module.exports = {
   nameByCode: _.propertyOf(states),
