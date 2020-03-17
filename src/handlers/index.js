@@ -4,6 +4,7 @@ const { dataResponse, handleResponse } = require('./responses')
 const apollo = require('./apollo')
 const playground = require('./playground')
 const getYaml = require('./yaml')
+
 /* globals fetch Response */
 
 const handleRequest = (redirectMap, request) => {

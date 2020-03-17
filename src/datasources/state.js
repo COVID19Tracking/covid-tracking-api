@@ -1,8 +1,24 @@
 const _ = require('lodash/fp')
+const { addHours, formatISO, parse } = require('date-fns/fp')
+const { zonedTimeToUtc } = require('date-fns-tz/fp')
 const { RESTDataSource } = require('apollo-datasource-rest')
 const { createObj, propDo, setFieldWith } = require('prairie')
 const { codeByName, nameByCode } = require('./stateNames')
 
+const toDate = _.flow(
+  zonedTimeToUtc('America/New_York'),
+  addHours(16),
+  formatISO,
+)
+
+const dailyDate = _.flow(
+  parse(new Date(), 'yyyyMMdd'),
+  toDate,
+)
+const totalDate = _.flow(
+  parse(new Date(), 'M/dd HH:mm'),
+  toDate,
+)
 const stat = ({
   date, death, positive, negative, pending, total, lastUpdatedEt, checkTimeEt, state,
 }) => ({
@@ -12,8 +28,8 @@ const stat = ({
   pending,
   death,
   total,
-  dateModified: lastUpdatedEt || date,
-  dateChecked: checkTimeEt,
+  dateModified: lastUpdatedEt && totalDate(lastUpdatedEt),
+  dateChecked: (checkTimeEt && totalDate(checkTimeEt)) || (date && dailyDate(date)),
 })
 
 const resource = ({
