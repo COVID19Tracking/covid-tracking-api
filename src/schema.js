@@ -2,6 +2,7 @@ const { gql } = require('apollo-server-cloudflare')
 
 const typeDefs = gql`
   scalar JSONObject
+  scalar Date
 
   type CovidStat {
     state: String!
@@ -9,8 +10,8 @@ const typeDefs = gql`
     negative: Int
     pending: Int
     death: Int
-    dateModified: String
-    dateChecked: String
+    dateModified: Date
+    dateChecked: Date
   }
   type Headers {
     Cookie: String

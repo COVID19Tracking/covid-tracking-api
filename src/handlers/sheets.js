@@ -1,5 +1,7 @@
 const _ = require('lodash/fp')
 
+/* globals fetch */
+
 function getVal(value) {
   if (value === '') return null
   if (value === 'N') return false
@@ -16,10 +18,12 @@ const fixVals = _.flow(
   ([keys, ...values]) => _.map(_.zipObject(_.map(_.camelCase, keys)), getVals(values)),
 )
 
-function sheetVals({ worksheetId, sheetName, key }) {
+function sheetVals({ worksheetId, sheetName, key }, { search }) {
   return fetch(`https://sheets.googleapis.com/v4/spreadsheets/${worksheetId}/values/${sheetName}?key=${key}`)
     .then((res) => res.json())
     .then(fixVals)
+    .then((x) => (_.isEmpty(search) ? x : _.filter(_.mapValues(getVal, search), x)))
+    .catch((err) => console.log(err))
 }
 
 module.exports = {

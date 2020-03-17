@@ -1,3 +1,4 @@
+const _ = require('lodash/fp')
 const handleRequest = require('./handlers')
 
 const StateAPI = require('./datasources/state')
@@ -21,7 +22,7 @@ const graphQLOptions = {
 const sheets = {
   app: 'sheets',
   worksheetId: '18oVRrHj3c183mHmq3m89_163yuYltLNlOmPerQ18E8w',
-  key: global.GOOGLE_API_KEY,
+  key: global.GOOGLE_API_KEY || _.get('process.env.GOOGLE_API_KEY', global),
 }
 
 // ROUTER

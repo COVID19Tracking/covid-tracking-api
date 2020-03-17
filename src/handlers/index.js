@@ -10,7 +10,7 @@ const getYaml = require('./yaml')
 const handleRequest = (redirectMap, request) => {
   if (request.method === 'OPTIONS') return new Response('', { status: 204 })
   const { url } = request
-  const { origin, pathname } = new URL(url)
+  const { origin, pathname, searchParams } = new URL(url)
   const [path, ext] = pathname.split('.')
   const route = redirectMap && redirectMap.get(path)
   if (!route) {
@@ -23,7 +23,11 @@ const handleRequest = (redirectMap, request) => {
     return Response.redirect(`${origin}/${route}`, 302)
   }
   const args = {
-    ext, origin, pathname, path,
+    ext,
+    origin,
+    pathname,
+    path,
+    search: _.fromPairs([...searchParams.entries()]),
   }
   const { app } = route
 
@@ -31,7 +35,7 @@ const handleRequest = (redirectMap, request) => {
   if (app === 'playground') return playground(route)
   if (app === 'yaml') return getYaml(route).then(handleResponse(args))
   if (app === 'yaml') return getYaml(route).then(handleResponse(args))
-  if (app === 'sheets') return sheetVals(route).then(handleResponse(args))
+  if (app === 'sheets') return sheetVals(route, args).then(handleResponse(args))
 
   return fetch(request)
 }
