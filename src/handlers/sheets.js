@@ -18,14 +18,18 @@ const fixVals = _.flow(
   ([keys, ...values]) => _.map(_.zipObject(_.map(_.camelCase, keys)), getVals(values)),
 )
 
-function sheetVals({ worksheetId, sheetName, key }, { search }) {
+function sheetVals({
+  fixItem, worksheetId, sheetName, key,
+}, { search }) {
   const runSearch = _.flow(
     _.filter(_.mapValues(getVal, search)),
     (x) => (x.length === 1 ? x[0] : x),
   )
+  console.log('fixItem', fixItem)
   return fetch(`https://sheets.googleapis.com/v4/spreadsheets/${worksheetId}/values/${sheetName}?key=${key}`)
     .then((res) => res.json())
     .then(fixVals)
+    .then((x) => (_.isFunction(fixItem) ? _.map(fixItem, x) : x))
     .then((x) => (_.isEmpty(search) ? x : runSearch(x)))
     .catch((err) => console.log(err))
 }

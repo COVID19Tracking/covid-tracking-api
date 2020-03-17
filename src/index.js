@@ -1,5 +1,8 @@
-const _ = require('lodash/fp')
+// const _ = require('lodash/fp')
+const { setFieldWith } = require('prairie')
 const handleRequest = require('./handlers')
+
+const { addName, dailyDate } = require('./datasources/utils')
 
 const StateAPI = require('./datasources/state')
 const resolvers = require('./resolvers')
@@ -30,10 +33,21 @@ const sheets = {
 const redirectMap = new Map([
   ['/', 'http://covidtracking.com'],
   ['/states', { ...sheets, sheetName: 'States current' }],
-  ['/states/daily', { ...sheets, sheetName: 'States daily 4 pm ET' }],
-  ['/states/info', { ...sheets, sheetName: 'States' }],
+  ['/states/daily', {
+    ...sheets,
+    fixItem: setFieldWith('dateChecked', 'date', dailyDate),
+    sheetName: 'States daily 4 pm ET',
+  }],
+  ['/states/info', {
+    ...sheets,
+    sheetName: 'States',
+    fixItem: addName,
+  }],
   ['/us', { ...sheets, sheetName: 'US current' }],
-  ['/us/daily', { ...sheets, sheetName: 'US daily 4 pm ET' }],
+  ['/us/daily', {
+    ...sheets,
+    sheetName: 'US daily 4 pm ET',
+  }],
   ['/counties', { ...sheets, sheetName: 'Counties' }],
   ['/urls', {
     app: 'yaml',
