@@ -19,10 +19,14 @@ const fixVals = _.flow(
 )
 
 function sheetVals({ worksheetId, sheetName, key }, { search }) {
+  const runSearch = _.flow(
+    _.filter(_.mapValues(getVal, search)),
+    (x) => (x.length === 1 ? x[0] : x),
+  )
   return fetch(`https://sheets.googleapis.com/v4/spreadsheets/${worksheetId}/values/${sheetName}?key=${key}`)
     .then((res) => res.json())
     .then(fixVals)
-    .then((x) => (_.isEmpty(search) ? x : _.filter(_.mapValues(getVal, search), x)))
+    .then((x) => (_.isEmpty(search) ? x : runSearch(x)))
     .catch((err) => console.log(err))
 }
 
