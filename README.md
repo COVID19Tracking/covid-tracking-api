@@ -14,6 +14,8 @@ The default response is JSON. If you'd like CSV just append `.csv` at the end of
 * Counties- http://covidtracking.com/api/counties
 * Tracker URLs - http://covidtracking.com/api/urls
 
+If you want to filter the `/api/us/daily` you can add a query param like `?state=NY` to only show cases in New York. Or `?state=NY&date=20200316` to show the result of a specific date.
+
 ## GraphQL API
 
 * Playground - http://covidtracking.com/api/playground
