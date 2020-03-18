@@ -1,5 +1,8 @@
-// const _ = require('lodash/fp')
-const { setFieldWith } = require('prairie')
+const _ = require('lodash/fp')
+const {
+  mergeFieldsWith, propDo, setField, setFieldWith,
+} = require('prairie')
+const { isGt } = require('understory')
 const handleRequest = require('./handlers')
 
 const { addName, dailyDate } = require('./datasources/utils')
@@ -54,6 +57,34 @@ const redirectMap = new Map([
     url: 'https://raw.githubusercontent.com/COVID19Tracking/covid-tracking/master/urls.yaml',
     multi: true,
     args: { json: true }, // Duplicate keys will override values rather than throwing an error.
+  }],
+  ['/snapshots', {
+    app: 'xml',
+    url: 'https://covid-data-archive.s3.us-east-2.amazonaws.com/',
+    handleResult: _.flow(
+      _.get('contents'),
+      _.filter(_.overEvery([
+        propDo('key', _.startsWith('state_screenshots/')),
+        propDo('key', _.negate(_.includes('public'))),
+        propDo('size', isGt(0)),
+      ])),
+      _.map(_.flow(
+        mergeFieldsWith(
+          'key',
+          _.flow(
+            _.split('/'),
+            _.tail,
+            _.zipObject(['state', 'filename']),
+            setField(
+              'url',
+              ({ state, filename }) => `https://covidtracking.com/screenshots/${state}/${filename}`,
+            ),
+          ),
+        ),
+        _.omit(['storageClass', 'key', 'lastModified']),
+      )),
+      _.groupBy('state'),
+    ),
   }],
   [graphQLOptions.baseEndpoint, graphQLOptions],
   // Playground.
