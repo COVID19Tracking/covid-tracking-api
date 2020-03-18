@@ -3,6 +3,7 @@ const { sheetVals } = require('./sheets')
 const { dataResponse, handleResponse } = require('./responses')
 const apollo = require('./apollo')
 const playground = require('./playground')
+const getXml = require('./xml')
 const getYaml = require('./yaml')
 
 /* globals fetch Response */
@@ -33,9 +34,9 @@ const handleRequest = (redirectMap, request) => {
 
   if (app === 'apollo') return apollo(request, route)
   if (app === 'playground') return playground(route)
-  if (app === 'yaml') return getYaml(route).then(handleResponse(args))
-  if (app === 'yaml') return getYaml(route).then(handleResponse(args))
   if (app === 'sheets') return sheetVals(route, args).then(handleResponse(args))
+  if (app === 'xml') return getXml(route).then(handleResponse(args))
+  if (app === 'yaml') return getYaml(route).then(handleResponse(args))
 
   return fetch(request)
 }

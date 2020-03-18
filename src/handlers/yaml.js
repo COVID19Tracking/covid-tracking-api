@@ -1,9 +1,6 @@
 const yaml = require('js-yaml')
 
-const id = (item) => {
-  console.log(item)
-  return item
-}
+/* globals fetch */
 
 function getYaml({ args, multi, url }) {
   return fetch(url, { headers: { Accept: 'text/html' } })
@@ -12,7 +9,7 @@ function getYaml({ args, multi, url }) {
       try {
         if (!multi) return yaml.safeLoad(text, args)
         const items = []
-        const addItem = item => items.push(item)
+        const addItem = (item) => items.push(item)
         yaml.safeLoadAll(text, addItem, args)
         return items
       } catch (err) {
