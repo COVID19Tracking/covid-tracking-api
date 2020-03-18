@@ -88,7 +88,7 @@ const redirectMap = new Map([
   }],
   [graphQLOptions.baseEndpoint, graphQLOptions],
   // Playground.
-  [graphQLOptions.playgroundEndpoint, { ...graphQLOptions, app: 'playground' }],
+  [graphQLOptions.playgroundEndpoint, { baseEndpoint: '/api/graphql', app: 'playground' }],
 ])
 
 const options = {
