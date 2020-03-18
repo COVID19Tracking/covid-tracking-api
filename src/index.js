@@ -58,7 +58,7 @@ const redirectMap = new Map([
     multi: true,
     args: { json: true }, // Duplicate keys will override values rather than throwing an error.
   }],
-  ['/snapshots', {
+  ['/screenshots', {
     app: 'xml',
     url: 'https://covid-data-archive.s3.us-east-2.amazonaws.com/',
     handleResult: _.flow(
