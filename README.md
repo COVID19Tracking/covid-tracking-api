@@ -6,13 +6,14 @@ A [Cloudflare Worker](https://developers.cloudflare.com/workers/) that makes a r
 
 The default response is JSON. If you'd like CSV just append `.csv` at the end of the url. For example https://covidtracking.com/api/states.csv
 
-* States current - http://covidtracking.com/api/states
-* States daily 4 pm ET - http://covidtracking.com/api/states/daily
-* States info - http://covidtracking.com/api/states/info
-* US current - http://covidtracking.com/api/us
-* US daily - http://covidtracking.com/api/us/daily
-* Counties- http://covidtracking.com/api/counties
-* Tracker URLs - http://covidtracking.com/api/urls
+* States current - [/api/states](https://covidtracking.com/api/states) | [CSV](https://covidtracking.com/api/states.csv) `lastUpdateEt` is the state’s last data update. `checkTimeET` is the last time our people checked.
+* States daily 4 pm ET - [/api/states/daily](https://covidtracking.com/api/states/daily) | [CSV](http://covidtracking.com/api/states/daily.csv)
+* States info - [/api/states/info](https://covidtracking.com/api/states/info) | [CSV](https://covidtracking.com/api/states/info.csv)
+* US current - [/api/us](http://covidtracking.com/api/us) | [CSV](https://covidtracking.com/api/us.csv)
+* US daily - [/api/us/daily](https://covidtracking.com/api/us/daily) | [CSV](https://covidtracking.com/api/us/daily.csv)
+* Counties- [/api/counties](https://covidtracking.com/api/counties) | [CSV](https://covidtracking.com/api/counties.csv)
+* Tracker URLs - [/api/urls](https://covidtracking.com/api/urls)
+* State Website Screenshots - [/api/screenshots](https://covidtracking.com/api/screenshots)
 
 If you want to filter the `/api/us/daily` you can add a query param like `?state=NY` to only show cases in New York. Or `?state=NY&date=20200316` to show the result of a specific date.
 
