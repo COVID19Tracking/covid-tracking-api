@@ -12,7 +12,7 @@ function getXml({ handleResult, url }) {
     tagNameProcessors: [_.camelCase],
   })
   // console.log(url)
-  return fetch(url, { headers: { Accept: 'text/xml' } })
+  return fetch(url, { cf: { cacheTtl: 20 }, headers: { Accept: 'text/xml' } })
     .then((response) => response.text())
     // .then((x) => console.log(x) || x)
     .then(parser.parseStringPromise)

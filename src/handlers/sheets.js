@@ -25,8 +25,10 @@ function sheetVals({
     _.filter(_.mapValues(getVal, search)),
     (x) => (x.length === 1 ? x[0] : x),
   )
-  console.log('fixItem', fixItem)
-  return fetch(`https://sheets.googleapis.com/v4/spreadsheets/${worksheetId}/values/${sheetName}?key=${key}`)
+  return fetch(
+    `https://sheets.googleapis.com/v4/spreadsheets/${worksheetId}/values/${sheetName}?key=${key}`,
+    { cf: { cacheTtl: 60 } },
+  )
     .then((res) => res.json())
     .then(fixVals)
     .then((x) => (_.isFunction(fixItem) ? _.map(fixItem, x) : x))

@@ -1,9 +1,8 @@
 const yaml = require('js-yaml')
 
 /* globals fetch */
-
 function getYaml({ args, multi, url }) {
-  return fetch(url, { headers: { Accept: 'text/html' } })
+  return fetch(url, { cf: { cacheTtl: 20 }, headers: { Accept: 'text/html' } })
     .then((response) => response.text())
     .then((text) => {
       try {
