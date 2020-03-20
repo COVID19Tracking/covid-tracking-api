@@ -63,7 +63,7 @@ const redirectMap = new Map([
     sheetVals(grade, {}),
     sheetVals(states, {}).then(_.keyBy('state')),
   ])
-    .then(_.flow(_.mergeAll, _.values))
+    .then(_.flow(_.mergeAll, _.values, _.filter('state')))
     .then(runSearch(args.search))
     .then(handleResponse(args)),
   ],
