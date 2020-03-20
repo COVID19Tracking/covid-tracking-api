@@ -18,11 +18,15 @@ const totalDate = _.flow(
   parse(new Date(), 'M/dd HH:mm'),
   toDate,
 )
-
+const screenshotDate = _.flow(
+  parse(new Date(), 'yyyyMMddHHmmss'),
+  toDate,
+)
 const addName = setFieldWith('name', 'state', nameByCode)
 
 module.exports = {
   addName,
   dailyDate,
+  screenshotDate,
   totalDate,
 }

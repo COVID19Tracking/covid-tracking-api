@@ -6,7 +6,9 @@ const { isGt } = require('understory')
 const handleRequest = require('./handlers')
 const { handleResponse } = require('./handlers/responses')
 const { runSearch, sheetVals } = require('./handlers/sheets')
-const { addName, dailyDate, totalDate } = require('./datasources/utils')
+const {
+  addName, dailyDate, screenshotDate, totalDate,
+} = require('./datasources/utils')
 
 const StateAPI = require('./datasources/state')
 const resolvers = require('./resolvers')
@@ -111,6 +113,10 @@ const redirectMap = new Map([
               'url',
               ({ state, filename }) => `https://covidtracking.com/screenshots/${state}/${filename}`,
             ),
+            setFieldWith('dateChecked', 'filename', _.flow(
+              _.split('-'), // state-date-time.png
+              (x) => screenshotDate((x[1] + x[2]).split('.')[0]),
+            )),
           ),
         ),
         _.omit(['storageClass', 'key', 'lastModified']),
