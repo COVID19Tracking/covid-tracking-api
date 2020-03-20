@@ -24,7 +24,7 @@ If you want to filter the `/api/us/daily` you can add a query param like `?state
 
 ## Technical How
 
-Currently each and every request is passed through netlify to cloudflare and then to an endpoint that makes an API request to google and then cleans it up and decides format before returning results. A cache can be configured if desired but is not currently enabled.
+Currently each and every request is passed through [Netlify](https://docs.netlify.com/routing/redirects/rewrites-proxies/) to [Cloudflare](https://workers.cloudflare.com/) that makes an API request to Google and then cleans it up and decides format before returning results. A minimal cache is configured.
 
 #### Easy Deploy w/ Wrangler
 
