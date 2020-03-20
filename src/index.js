@@ -54,7 +54,11 @@ const grade = {
 
 const redirectMap = new Map([
   ['/', 'http://covidtracking.com'],
-  // ['/states', states],
+  ['/press', {
+    ...sheets,
+    sheetName: 'Sheet1',
+    worksheetId: '1-lvGZ3NgVlda4EcF5t_AVFLnBqz-TOl4YZxYH_mJF_4',
+  }],
   ['/states', (request, args) => Promise.all([
     sheetVals(grade, {}),
     sheetVals(states, {}).then(_.keyBy('state')),

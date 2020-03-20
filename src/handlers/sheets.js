@@ -4,8 +4,8 @@ const _ = require('lodash/fp')
 
 function getVal(value) {
   if (value === '') return null
-  if (value === 'N') return false
-  if (value === 'Y') return true
+  if (value === 'N' || value === 'FALSE') return false
+  if (value === 'Y' || value === 'TRUE') return true
   if (value.match(/^(\d+|\d{1,3}(,\d{3})*)(\.\d+)?$/)) return Number(value.replace(/,/g, ''))
   if (!isNaN(value)) return Number(value)
   return value
