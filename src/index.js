@@ -5,7 +5,7 @@ const {
 const { isGt } = require('understory')
 const handleRequest = require('./handlers')
 
-const { addName, dailyDate } = require('./datasources/utils')
+const { addName, dailyDate, totalDate } = require('./datasources/utils')
 
 const StateAPI = require('./datasources/state')
 const resolvers = require('./resolvers')
@@ -34,7 +34,14 @@ const sheets = {
 
 const redirectMap = new Map([
   ['/', 'http://covidtracking.com'],
-  ['/states', { ...sheets, sheetName: 'States current' }],
+  ['/states', {
+    ...sheets,
+    sheetName: 'States current',
+    fixItem: _.flow(
+      setFieldWith('dateModified', 'lastUpdateEt', totalDate),
+      setFieldWith('dateChecked', 'checkTimeEt', totalDate),
+    ),
+  }],
   ['/states/daily', {
     ...sheets,
     fixItem: setFieldWith('dateChecked', 'date', dailyDate),
@@ -42,8 +49,8 @@ const redirectMap = new Map([
   }],
   ['/states/info', {
     ...sheets,
-    sheetName: 'States',
     fixItem: addName,
+    sheetName: 'States',
   }],
   ['/us', { ...sheets, sheetName: 'US current' }],
   ['/us/daily', {
