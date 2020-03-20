@@ -27,7 +27,7 @@ const graphQLOptions = {
 const sheets = {
   app: 'sheets',
   worksheetId: '18oVRrHj3c183mHmq3m89_163yuYltLNlOmPerQ18E8w',
-  key: global.GOOGLE_API_KEY || _.get('process.env.GOOGLE_API_KEY', global),
+  key: global.GOOGLE_API_KEY || _.get('process.env.GOOGLE_API_KEY', global) || 'AIzaSyCq-ToIIsmRBGYuDVthThRVtqHPIa4bYiE',
 }
 
 // ROUTER
@@ -37,20 +37,26 @@ const redirectMap = new Map([
   ['/states', {
     ...sheets,
     sheetName: 'States current',
-    fixItem: _.flow(
+    fixItems: _.map(_.flow(
       setFieldWith('dateModified', 'lastUpdateEt', totalDate),
       setFieldWith('dateChecked', 'checkTimeEt', totalDate),
-    ),
+    )),
   }],
   ['/states/daily', {
     ...sheets,
-    fixItem: setFieldWith('dateChecked', 'date', dailyDate),
+    fixItems: _.map(setFieldWith('dateChecked', 'date', dailyDate)),
     sheetName: 'States daily 4 pm ET',
   }],
   ['/states/info', {
     ...sheets,
-    fixItem: addName,
+    fixItems: _.map(addName),
     sheetName: 'States',
+  }],
+  ['/states/grade', {
+    ...sheets,
+    worksheetId: '1_6zwoekv0Mzpp6KEp4OziZizaWxGOxMoDT2C-iBvyEg',
+    sheetName: 'Sheet1',
+    fixItems: _.flow(_.compact, _.keyBy('state')),
   }],
   ['/us', { ...sheets, sheetName: 'US current' }],
   ['/us/daily', {
