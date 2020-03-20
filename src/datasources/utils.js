@@ -6,12 +6,12 @@ const { nameByCode } = require('./stateNames')
 
 const toDate = _.flow(
   zonedTimeToUtc('America/New_York'),
-  addHours(16),
   formatISO,
 )
 
 const dailyDate = _.flow(
   parse(new Date(), 'yyyyMMdd'),
+  addHours(16),
   toDate,
 )
 const totalDate = _.flow(
