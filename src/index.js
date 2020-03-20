@@ -21,7 +21,6 @@ const graphQLOptions = {
   baseEndpoint: '/graphql',
   playgroundEndpoint: '/playground',
   app: 'apollo',
-  cors: false,
   kvCache: false,
 }
 

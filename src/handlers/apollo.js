@@ -1,6 +1,6 @@
 const { ApolloServer } = require('apollo-server-cloudflare')
 const { graphqlCloudflare } = require('apollo-server-cloudflare/dist/cloudflareApollo')
-
+const setCors = require('./setCors')
 // const KVCache = require('./kv-cache')
 
 const createServer = ({
@@ -16,6 +16,7 @@ const createServer = ({
 const handler = (request, graphQLOptions) => {
   const server = createServer(graphQLOptions)
   return graphqlCloudflare(() => server.createGraphQLServerOptions(request))(request)
+    .then(setCors(graphQLOptions.cors || {}))
 }
 
 module.exports = handler
