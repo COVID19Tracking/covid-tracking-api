@@ -4,7 +4,8 @@ const {
 } = require('prairie')
 const { isGt } = require('understory')
 const handleRequest = require('./handlers')
-
+const { handleResponse } = require('./handlers/responses')
+const { runSearch, sheetVals } = require('./handlers/sheets')
 const { addName, dailyDate, totalDate } = require('./datasources/utils')
 
 const StateAPI = require('./datasources/state')
@@ -14,6 +15,7 @@ const typeDefs = require('./schema')
 const dataSources = () => ({
   stateAPI: new StateAPI(),
 })
+
 const graphQLOptions = {
   dataSources,
   typeDefs,
@@ -31,17 +33,36 @@ const sheets = {
 }
 
 // ROUTER
+const states = {
+  ...sheets,
+  sheetName: 'States current',
+  fixItems: _.map(_.flow(
+    setFieldWith('dateModified', 'lastUpdateEt', totalDate),
+    setFieldWith('dateChecked', 'checkTimeEt', totalDate),
+  )),
+}
+const grade = {
+  ...sheets,
+  worksheetId: '1_6zwoekv0Mzpp6KEp4OziZizaWxGOxMoDT2C-iBvyEg',
+  sheetName: 'Sheet1',
+  fixItems: _.flow(
+    _.compact,
+    _.map(_.omit(['timeOfLastStateUpdateEt', 'lastCheckTimeEt', 'checker', 'doubleChecker'])),
+    _.keyBy('state'),
+  ),
+}
 
 const redirectMap = new Map([
   ['/', 'http://covidtracking.com'],
-  ['/states', {
-    ...sheets,
-    sheetName: 'States current',
-    fixItems: _.map(_.flow(
-      setFieldWith('dateModified', 'lastUpdateEt', totalDate),
-      setFieldWith('dateChecked', 'checkTimeEt', totalDate),
-    )),
-  }],
+  // ['/states', states],
+  ['/states', (request, args) => Promise.all([
+    sheetVals(grade, {}),
+    sheetVals(states, {}).then(_.keyBy('state')),
+  ])
+    .then(_.flow(_.mergeAll, _.values))
+    .then(runSearch(args.search))
+    .then(handleResponse(args)),
+  ],
   ['/states/daily', {
     ...sheets,
     fixItems: _.map(setFieldWith('dateChecked', 'date', dailyDate)),
@@ -52,12 +73,7 @@ const redirectMap = new Map([
     fixItems: _.map(addName),
     sheetName: 'States',
   }],
-  ['/states/grade', {
-    ...sheets,
-    worksheetId: '1_6zwoekv0Mzpp6KEp4OziZizaWxGOxMoDT2C-iBvyEg',
-    sheetName: 'Sheet1',
-    fixItems: _.flow(_.compact, _.keyBy('state')),
-  }],
+  ['/states/grade', grade],
   ['/us', { ...sheets, sheetName: 'US current' }],
   ['/us/daily', {
     ...sheets,

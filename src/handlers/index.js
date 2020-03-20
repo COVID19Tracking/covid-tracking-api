@@ -30,6 +30,8 @@ const handleRequest = (redirectMap, request) => {
     path,
     search: _.fromPairs([...searchParams.entries()]),
   }
+  if (_.isFunction(route)) return route(request, args)
+
   const { app } = route
 
   if (app === 'apollo') return apollo(request, route)
