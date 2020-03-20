@@ -27,7 +27,7 @@ const graphQLOptions = {
 const sheets = {
   app: 'sheets',
   worksheetId: '18oVRrHj3c183mHmq3m89_163yuYltLNlOmPerQ18E8w',
-  key: global.GOOGLE_API_KEY || _.get('process.env.GOOGLE_API_KEY', global) || 'AIzaSyCq-ToIIsmRBGYuDVthThRVtqHPIa4bYiE',
+  key: global.GOOGLE_API_KEY || _.get('process.env.GOOGLE_API_KEY', global),
 }
 
 // ROUTER
