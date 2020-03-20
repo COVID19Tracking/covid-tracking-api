@@ -9,7 +9,8 @@ module.exports = {
       }
       return dataSources.stateAPI.getAllStates()
     },
-    state: (parent, args, { dataSources }) =>
-      dataSources.stateAPI.getStateById(args),
-  }
+    state: (parent, args, { dataSources }) => dataSources.stateAPI.getStateById(args),
+    usCumulativeTotal: (parent, args, { dataSources }) => dataSources.stateAPI.getUsTotal(),
+    usDailyData: (parent, args, { dataSources }) => dataSources.stateAPI.getUsDaily(),
+  },
 }

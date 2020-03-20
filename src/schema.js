@@ -4,6 +4,15 @@ const typeDefs = gql`
   scalar JSONObject
   scalar Date
 
+  interface DataPoint {
+    positives: Int
+    negatives: Int
+    positivesPlusNegatives: Int
+    pending: Int
+    deaths: Int
+    total: Int
+  }
+
   type CovidStat {
     state: String!
     positive: Int
@@ -13,6 +22,7 @@ const typeDefs = gql`
     dateModified: Date
     dateChecked: Date
   }
+
   type Headers {
     Cookie: String
   }
@@ -52,9 +62,31 @@ const typeDefs = gql`
     healthDepartment: HealthDepartment
   }
 
+  type USDailyDataPoint implements DataPoint {
+    date: Date
+    statesReporting: Int
+    positives: Int
+    negatives: Int
+    positivesPlusNegatives: Int
+    pending: Int
+    deaths: Int
+    total: Int
+  }
+
+  type USTotalDataPoint implements DataPoint {
+    positives: Int
+    negatives: Int
+    positivesPlusNegatives: Int
+    pending: Int
+    deaths: Int
+    total: Int
+  }
+
   type Query {
     state(id: ID!): State
     states(ids: [ID]): [State]!
+    usCumulativeTotal: USTotalDataPoint
+    usDailyData: [USDailyDataPoint]
   }
 `
 

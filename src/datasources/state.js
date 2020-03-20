@@ -73,6 +73,10 @@ class StateAPI extends RESTDataSource {
   getStateById({ id }) { return this.getStateIndex().then(_.get(id)) }
 
   getStateByIds({ ids }) { return this.getStateIndex().then(_.at(ids)) }
+
+  getUsTotal() { return this.get('us').then(_.head) }
+
+  getUsDaily() { return this.get('us/daily') }
 }
 
 module.exports = StateAPI
