@@ -1,6 +1,6 @@
 const _ = require('lodash/fp')
 const {
-  mergeFieldsWith, propDo, setField, setFieldWith,
+  mergeFieldsWith, move, propDo, setField, setFieldWith,
 } = require('prairie')
 const { isGt } = require('understory')
 const handleRequest = require('./handlers')
@@ -13,6 +13,8 @@ const {
 const StateAPI = require('./datasources/state')
 const resolvers = require('./resolvers')
 const typeDefs = require('./schema')
+
+const cache = global.COVID || { get: _.noop, set: _.noop }
 
 const dataSources = () => ({
   stateAPI: new StateAPI(),
@@ -31,7 +33,7 @@ const graphQLOptions = {
 const sheets = {
   app: 'sheets',
   worksheetId: '18oVRrHj3c183mHmq3m89_163yuYltLNlOmPerQ18E8w',
-  key: global.GOOGLE_API_KEY || _.get('process.env.GOOGLE_API_KEY', global),
+  key: global.GOOGLE_API_KEY || _.get('process.env.GOOGLE_API_KEY', global) || 'AIzaSyCq-ToIIsmRBGYuDVthThRVtqHPIa4bYiE',
 }
 
 // ROUTER
@@ -60,6 +62,7 @@ const redirectMap = new Map([
     ...sheets,
     sheetName: 'Sheet1',
     worksheetId: '1-lvGZ3NgVlda4EcF5t_AVFLnBqz-TOl4YZxYH_mJF_4',
+    fixItems: _.orderBy(['publishDate'], ['desc']),
   }],
   ['/states', (request, args) => Promise.all([
     sheetVals(grade, {}),
@@ -96,15 +99,15 @@ const redirectMap = new Map([
     app: 'xml',
     url: 'https://covid-data-archive.s3.us-east-2.amazonaws.com/',
     handleResult: _.flow(
-      _.get('contents'),
+      _.get('ListBucketResult.Contents'),
       _.filter(_.overEvery([
-        propDo('key', _.startsWith('state_screenshots/')),
-        propDo('key', _.negate(_.includes('public'))),
-        propDo('size', isGt(0)),
+        propDo('Key', _.startsWith('state_screenshots/')),
+        propDo('Key', _.negate(_.includes('public'))),
+        propDo('Size', isGt(0)),
       ])),
       _.map(_.flow(
         mergeFieldsWith(
-          'key',
+          'Key',
           _.flow(
             _.split('/'),
             _.tail,
@@ -119,7 +122,8 @@ const redirectMap = new Map([
             )),
           ),
         ),
-        _.omit(['storageClass', 'key', 'lastModified']),
+        _.omit(['StorageClass', 'Key', 'LastModified']),
+        move('Size', 'size'),
       )),
       _.groupBy('state'),
     ),
@@ -136,7 +140,7 @@ const options = {
 
 function handler(request) {
   try {
-    return handleRequest(redirectMap, request)
+    return handleRequest(redirectMap, request, cache)
   } catch (err) {
     console.error(err)
     // Return the error stack as the response

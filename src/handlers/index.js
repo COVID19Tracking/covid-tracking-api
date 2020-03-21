@@ -8,10 +8,16 @@ const getYaml = require('./yaml')
 
 /* globals fetch Response */
 
-const handleRequest = (redirectMap, request) => {
+// Function to fetch or build new content body.
+// Apply headers
+// Return result
+
+const handleRequest = (redirectMap, request, cache) => {
   if (request.method === 'OPTIONS') return new Response('', { status: 204 })
   const { url } = request
-  const { origin, pathname, searchParams } = new URL(url)
+  const {
+    origin, pathname, search, searchParams,
+  } = new URL(url)
   const [path, ext] = pathname.split('.')
   const route = redirectMap && redirectMap.get(path)
   if (!route) {
@@ -23,7 +29,12 @@ const handleRequest = (redirectMap, request) => {
     if (route.startsWith('http')) return Response.redirect(route, 302)
     return Response.redirect(`${origin}/${route}`, 302)
   }
+  // Check to see if the pathname is in the cache.
+  // cache.get(pathname)
+
   const args = {
+    cache,
+    cacheId: pathname + search,
     ext,
     origin,
     pathname,

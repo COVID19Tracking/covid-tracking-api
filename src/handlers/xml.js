@@ -1,21 +1,33 @@
 const _ = require('lodash/fp')
-const xml2js = require('xml2js')
+const parser = require('fast-xml-parser')
 
 /* globals fetch */
 
-function getXml({ handleResult, url }) {
-  const parser = new xml2js.Parser({
-    explicitArray: false,
-    explicitRoot: false,
-    ignoreAttrs: true,
-    mergeAttrs: true,
-    tagNameProcessors: [_.camelCase],
+// const xml2js = require('xml2js') // TOO SLOW - RESOURCE INTENSE
+// const parser = new xml2js.Parser({
+//   explicitArray: false,
+//   explicitRoot: false,
+//   ignoreAttrs: true,
+//   mergeAttrs: true,
+//   tagNameProcessors: [_.camelCase],
+// })
+
+function parse(xmlText, options = {}) {
+  return new Promise((resolve, reject) => {
+    try {
+      resolve(parser.parse(xmlText, options, true))
+    } catch (err) {
+      reject(err)
+    }
   })
+}
+
+function getXml({ handleResult, url }) {
   // console.log(url)
   return fetch(url, { cf: { cacheTtl: 300 }, headers: { Accept: 'text/xml' } })
     .then((response) => response.text())
     // .then((x) => console.log(x) || x)
-    .then(parser.parseStringPromise)
+    .then(parse)
     .then((x) => (_.isFunction(handleResult) ? handleResult(x) : x))
 }
 
