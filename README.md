@@ -7,9 +7,9 @@ A [Cloudflare Worker](https://developers.cloudflare.com/workers/) that makes a r
 The default response is JSON. If you'd like CSV just append `.csv` at the end of the url. For example https://covidtracking.com/api/states.csv
 
 * States current - [/api/states](https://covidtracking.com/api/states) | [CSV](https://covidtracking.com/api/states.csv) `lastUpdateEt` is the state’s last data update. `checkTimeET` is the last time our people checked.
-* States daily 4 pm ET - [/api/states/daily](https://covidtracking.com/api/states/daily) | [CSV](http://covidtracking.com/api/states/daily.csv)
+* States daily 4 pm ET - [/api/states/daily](https://covidtracking.com/api/states/daily) | [CSV](https://covidtracking.com/api/states/daily.csv)
 * States info - [/api/states/info](https://covidtracking.com/api/states/info) | [CSV](https://covidtracking.com/api/states/info.csv)
-* US current - [/api/us](http://covidtracking.com/api/us) | [CSV](https://covidtracking.com/api/us.csv)
+* US current - [/api/us](https://covidtracking.com/api/us) | [CSV](https://covidtracking.com/api/us.csv)
 * US daily - [/api/us/daily](https://covidtracking.com/api/us/daily) | [CSV](https://covidtracking.com/api/us/daily.csv)
 * Counties- [/api/counties](https://covidtracking.com/api/counties) | [CSV](https://covidtracking.com/api/counties.csv)
 * Tracker URLs - [/api/urls](https://covidtracking.com/api/urls)
@@ -19,8 +19,8 @@ If you want to filter the `/api/us/daily` you can add a query param like `?state
 
 ## GraphQL API
 
-* Playground - http://covidtracking.com/api/playground
-* GraphQL API - http://covidtracking.com/api/graphql
+* Playground - https://covidtracking.com/api/playground
+* GraphQL API - https://covidtracking.com/api/graphql
 
 ## Technical How
 
