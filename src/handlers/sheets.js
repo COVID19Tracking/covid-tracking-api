@@ -1,30 +1,13 @@
 const _ = require('lodash/fp')
+const { getVals, runSearch } = require('./utils')
 
 /* globals fetch */
 
-function getVal(value) {
-  if (value === '') return null
-  if (value === 'N' || value === 'FALSE') return false
-  if (value === 'Y' || value === 'TRUE') return true
-  if (value.match(/^(\d+|\d{1,3}(,\d{3})*)(\.\d+)?$/)) return Number(value.replace(/,/g, ''))
-  if (!isNaN(value)) return Number(value)
-  return value
-}
-
-const getVals = _.map(_.map(getVal))
 
 const fixVals = _.flow(
   _.get('values'),
-  ([keys, ...values]) => _.map(_.zipObject(_.map(_.camelCase, keys)), getVals(values)),
+  ([keys, ...values]) => _.map(_.zipObject(_.map(_.camelCase, keys)), _.map(getVals, values)),
 )
-
-function runSearch(search) {
-  if (_.isEmpty(search)) return _.identity
-  return _.flow(
-    _.filter(_.mapValues(getVal, search)),
-    (x) => (x.length === 1 ? x[0] : x),
-  )
-}
 
 function sheetVals({
   fixItems, worksheetId, sheetName, key,

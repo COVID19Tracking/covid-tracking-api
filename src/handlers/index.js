@@ -40,6 +40,7 @@ const handleRequest = (redirectMap, request, cache) => {
     pathname,
     path,
     search: _.fromPairs([...searchParams.entries()]),
+    responseType: (ext === 'csv') ? ext : 'json',
   }
   if (_.isFunction(route)) return route(request, args)
 
