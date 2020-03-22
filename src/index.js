@@ -1,18 +1,18 @@
 const _ = require('lodash/fp')
 const {
-  mergeFieldsWith, move, propDo, setField, setFieldWith,
+  setFieldWith,
 } = require('prairie')
-const { isGt } = require('understory')
 const handleRequest = require('./handlers')
 const { handleResponse } = require('./handlers/responses')
 const { runSearch, sheetVals } = require('./handlers/sheets')
 const {
-  addName, dailyDate, screenshotDate, totalDate,
+  addName, dailyDate, totalDate,
 } = require('./datasources/utils')
 
 const StateAPI = require('./datasources/state')
 const resolvers = require('./resolvers')
 const typeDefs = require('./schema')
+const screenshots = require('./datasources/screenshots')
 
 const cache = global.COVID || { get: _.noop, set: _.noop }
 
@@ -96,39 +96,7 @@ const redirectMap = new Map([
     multi: true,
     args: { json: true }, // Duplicate keys will override values rather than throwing an error.
   }],
-  ['/screenshots', {
-    app: 'xml',
-    url: 'https://covid-data-archive.s3.us-east-2.amazonaws.com/',
-    handleResult: _.flow(
-      _.get('ListBucketResult.Contents'),
-      _.filter(_.overEvery([
-        propDo('Key', _.startsWith('state_screenshots/')),
-        propDo('Key', _.negate(_.includes('public'))),
-        propDo('Size', isGt(0)),
-      ])),
-      _.map(_.flow(
-        mergeFieldsWith(
-          'Key',
-          _.flow(
-            _.split('/'),
-            _.tail,
-            _.zipObject(['state', 'filename']),
-            setField(
-              'url',
-              ({ state, filename }) => `https://covidtracking.com/screenshots/${state}/${filename}`,
-            ),
-            setFieldWith('dateChecked', 'filename', _.flow(
-              _.split('-'), // state-date-time.png
-              (x) => screenshotDate((x[1] + x[2]).split('.')[0]),
-            )),
-          ),
-        ),
-        _.omit(['StorageClass', 'Key', 'LastModified']),
-        move('Size', 'size'),
-      )),
-      _.groupBy('state'),
-    ),
-  }],
+  ['/screenshots', screenshots],
   [graphQLOptions.baseEndpoint, graphQLOptions],
   // Playground.
   [graphQLOptions.playgroundEndpoint, { baseEndpoint: '/api/graphql', app: 'playground' }],

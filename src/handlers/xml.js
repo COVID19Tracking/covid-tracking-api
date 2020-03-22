@@ -22,13 +22,13 @@ function parse(xmlText, options = {}) {
   })
 }
 
-function getXml({ handleResult, url }) {
+function getXml({ fixItems, url }) {
   // console.log(url)
   return fetch(url, { cf: { cacheTtl: 300 }, headers: { Accept: 'text/xml' } })
     .then((response) => response.text())
     // .then((x) => console.log(x) || x)
     .then(parse)
-    .then((x) => (_.isFunction(handleResult) ? handleResult(x) : x))
+    .then((x) => (_.isFunction(fixItems) ? fixItems(x) : x))
 }
 
 module.exports = getXml
