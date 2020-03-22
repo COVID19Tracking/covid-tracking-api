@@ -15,7 +15,7 @@ const dailyDate = _.flow(
   toDate,
 )
 const totalDate = _.flow(
-  parse(new Date(), 'M/dd HH:mm'),
+  (x) => parse(new Date(), 'M/dd HH:mm', x),
   toDate,
 )
 const screenshotDate = _.flow(
