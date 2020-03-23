@@ -14,7 +14,9 @@ const resolvers = require('./resolvers')
 const typeDefs = require('./schema')
 const screenshots = require('./datasources/screenshots')
 
-const cache = global.COVID || { get: _.noop, set: _.noop }
+/* globals COVID */
+
+const cache = typeof COVID === 'undefined' ? { get: console.log, put: console.log } : COVID
 
 const dataSources = () => ({
   stateAPI: new StateAPI(),
