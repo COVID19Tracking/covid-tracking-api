@@ -28,16 +28,20 @@ const htmlResponse = (html) => new Response(html, {
   },
 })
 
-function handleResponse({ ext, pathname }) {
+function handleResponse({ cache, ext, pathname }) {
+  const put = cache && _.isFunction(cache.put) ? cache.put : _.noop
+  const cacheArgs = { expirationTtl: 60 * 60 }
   return (res) => {
     if (ext === 'csv') {
       return new Promise((resolve) => {
         jsonexport(res, (err, csv) => {
           if (err) return resolve(new Response(err.stack || err))
+          put(pathname, csv, cacheArgs)
           return resolve(csvResponse(csv, pathname))
         })
       })
     }
+    put(pathname, JSON.stringify(res), cacheArgs)
     // txt or html could be added.
     return dataResponse(res)
   }

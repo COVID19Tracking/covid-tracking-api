@@ -1,7 +1,6 @@
 const _ = require('lodash/fp')
 const parser = require('fast-xml-parser')
-
-/* globals fetch */
+const { fetchXml } = require('./fetch')
 
 // const xml2js = require('xml2js') // TOO SLOW - RESOURCE INTENSE
 // const parser = new xml2js.Parser({
@@ -24,8 +23,7 @@ function parse(xmlText, options = {}) {
 
 function getXml({ fixItems, url }) {
   // console.log(url)
-  return fetch(url, { cf: { cacheTtl: 300 }, headers: { Accept: 'text/xml' } })
-    .then((response) => response.text())
+  return fetchXml(url)
     // .then((x) => console.log(x) || x)
     .then(parse)
     .then((x) => (_.isFunction(fixItems) ? fixItems(x) : x))

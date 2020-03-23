@@ -47,5 +47,8 @@ module.exports = {
   app: 'xml',
   url: 'https://covid-data-archive.s3.us-east-2.amazonaws.com/',
   // fetch:
+  // isValidResult: // Check if there are x number of items and they have a URL.
+  // search: true,
+  // prepResponse: // Get headers.
   fixItems,
 }

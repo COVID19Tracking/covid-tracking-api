@@ -3,6 +3,8 @@ const { graphqlCloudflare } = require('apollo-server-cloudflare/dist/cloudflareA
 const setCors = require('./setCors')
 // const KVCache = require('./kv-cache')
 
+/* globals Response */
+
 const createServer = ({
   dataSources, typeDefs, resolvers,
 }) => new ApolloServer({
@@ -13,10 +15,12 @@ const createServer = ({
   // cache: kvCache ? new KVCache() : undefined,
 })
 
-const handler = (request, graphQLOptions) => {
+function getApollo(request, graphQLOptions) {
+  if (request.method === 'OPTIONS') return new Response('', { status: 204 })
   const server = createServer(graphQLOptions)
   return graphqlCloudflare(() => server.createGraphQLServerOptions(request))(request)
-    .then(setCors(graphQLOptions.cors || {}))
 }
+const handler = (request, graphQLOptions) => getApollo(request, graphQLOptions)
+  .then(setCors(graphQLOptions.cors || {}))
 
 module.exports = handler

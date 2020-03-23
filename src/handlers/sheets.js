@@ -1,25 +1,23 @@
 const _ = require('lodash/fp')
+const { fetchJson, processResult, rejectError } = require('./fetch')
 const { getVals, runSearch } = require('./utils')
-
-/* globals fetch */
-
 
 const fixVals = _.flow(
   _.get('values'),
   ([keys, ...values]) => _.map(_.zipObject(_.map(_.camelCase, keys)), _.map(getVals, values)),
 )
 
-function sheetVals({
-  fixItems, worksheetId, sheetName, key,
-}, { search }) {
-  return fetch(
-    `https://sheets.googleapis.com/v4/spreadsheets/${worksheetId}/values/${sheetName}?key=${key}`,
-    { cf: { cacheEverything: true, cacheTtl: 120 } },
-  )
-    .then((res) => res.json())
-    .then((x) => (x.error ? Promise.reject(x) : x))
+function getSheet({ worksheetId, sheetName, key }) {
+  const url = `https://sheets.googleapis.com/v4/spreadsheets/${worksheetId}/values/${sheetName}?key=${key}`
+  return fetchJson(url)
+    // .then((x) => console.log(x) || x)
+    .then(rejectError)
     .then(fixVals)
-    .then((x) => (_.isFunction(fixItems) ? fixItems(x) : x))
+}
+
+function sheetVals({ fixItems, ...rest }, { search }) {
+  return getSheet(rest)
+    .then(processResult(fixItems))
     .then(runSearch(search))
     .catch((err) => console.log(err) || err)
 }
