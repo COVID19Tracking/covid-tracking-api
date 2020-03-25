@@ -13,8 +13,9 @@ async function handleUpdate(args, updateData, returnRaw = false) {
   const dataStr = await toStr(args, data)
   return cache.put(cacheId, dataStr, { expirationTtl: 3600 })
     .then(() => log({
+      cacheId,
       category: 'handleUpdate',
-      text: `Saved item to cache ${cacheId}`,
+      text: 'Saved item to cache',
     }))
     .then(() => (returnRaw ? data : dataStr)) // return data.
 }
@@ -29,8 +30,9 @@ async function checkCache(args, updateData) {
   const replace = age > ttl
   if (replace) {
     await log({
+      cacheId,
       category: 'checkCache',
-      text: `replace ${cacheId}, ttl: ${ttl}, age: ${age}`,
+      text: `replace ttl: ${ttl}, age: ${age}`,
     })
   }
   // Save a new copy to the cache.
