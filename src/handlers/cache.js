@@ -28,7 +28,10 @@ async function checkCache(args, updateData) {
   const age = 3600 - cacheTtl
   const replace = age > ttl
   if (replace) {
-    await log({ category: 'checkCache', text: `${cacheId}, ttl: ${ttl}, age: ${age}` })
+    await log({
+      category: 'checkCache',
+      text: `replace ${cacheId}, ttl: ${ttl}, age: ${age}`,
+    })
   }
   // Save a new copy to the cache.
   return replace ? handleUpdate(args, updateData) : Promise.resolve()
