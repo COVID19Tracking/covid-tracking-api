@@ -92,11 +92,16 @@ const press = {
   fixItems: _.orderBy(['publishDate'], ['desc']),
   ttl: 3600, // 1 hour
 }
-
+const usCurrent = {
+  ...sheets,
+  sheetName: 'US current',
+  fixItems: _.map(addTotalResults),
+}
 module.exports = {
   cdcTests,
   press,
   statesDaily,
   statesInfo,
+  usCurrent,
   usDaily,
 }

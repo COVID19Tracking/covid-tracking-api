@@ -5,6 +5,7 @@
   "description": "A Cloudflare Workers that cleans up google sheets",
   "main": "src/index.js",
   "scripts": {
+    "dev": "wrangler build && cloudflare-worker-local worker/script.js covid.cape.io 3000 wrangler.toml",
     "test": "echo \"Error: no test specified\" && exit 1",
     "format": "prettier --write '**/*.{js,css,json,md}'"
   },
@@ -14,7 +15,7 @@
     "eslint": "^6.8.0",
     "eslint-config-airbnb-base": "^14.1.0",
     "eslint-plugin-import": "^2.20.1",
-    "eslint-plugin-json": "^2.1.0",
+    "eslint-plugin-json": "^2.1.1",
     "eslint-plugin-lodash-fp": "^2.2.0-a1",
     "isomorphic-fetch": "^2.2.1",
     "prettier": "^1.18.2"

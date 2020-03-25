@@ -9,7 +9,7 @@ const {
   totalDate,
 } = require('./datasources/utils')
 const {
-  cdcTests, press, statesDaily, statesInfo, usDaily,
+  cdcTests, press, statesDaily, statesInfo, usCurrent, usDaily,
 } = require('./datasources/sheets')
 const urls = require('./datasources/urls')
 
@@ -88,7 +88,7 @@ const redirectMap = new Map([
   ['/states/daily', statesDaily],
   ['/states/info', statesInfo],
   ['/states/grade', grade],
-  ['/us', { ...sheets, sheetName: 'US current' }],
+  ['/us', usCurrent],
   ['/us/daily', usDaily],
   ['/counties', { ...sheets, sheetName: 'Counties' }],
   ['/urls', urls],
