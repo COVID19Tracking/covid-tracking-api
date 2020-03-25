@@ -2,7 +2,7 @@ const _ = require('lodash/fp')
 const { addHours, formatISO, parse } = require('date-fns/fp')
 const { zonedTimeToUtc } = require('date-fns-tz/fp')
 const { setFieldWith } = require('prairie')
-const { nameByCode } = require('./stateNames')
+const { fipsByCode, nameByCode } = require('./stateNames')
 
 const toDate = _.flow(
   zonedTimeToUtc('America/New_York'),
@@ -23,8 +23,10 @@ const screenshotDate = _.flow(
   toDate,
 )
 const addName = setFieldWith('name', 'state', nameByCode)
+const addFips = setFieldWith('fips', 'state', fipsByCode)
 
 module.exports = {
+  addFips,
   addName,
   dailyDate,
   screenshotDate,

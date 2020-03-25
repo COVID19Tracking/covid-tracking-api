@@ -3,7 +3,7 @@ const {
   setField, setFieldWith,
 } = require('prairie')
 const {
-  dailyDate,
+  addFips, addName, dailyDate,
 } = require('./utils')
 
 const sheets = {
@@ -19,18 +19,29 @@ const fixDaily = _.map(_.flow(
   addDailyDateChecked,
   addTotalResults,
 ))
-const usDaily = {
-  ...sheets,
-  fixItems: fixDaily,
-  sheetName: 'US daily 4 pm ET',
-}
+const fixStatesInfo = _.map(_.flow(
+  addFips,
+  addName,
+))
+
 const statesDaily = {
   ...sheets,
   fixItems: fixDaily,
   sheetName: 'States daily 4 pm ET',
 }
+const statesInfo = {
+  ...sheets,
+  fixItems: fixStatesInfo,
+  sheetName: 'States',
+}
+const usDaily = {
+  ...sheets,
+  fixItems: fixDaily,
+  sheetName: 'US daily 4 pm ET',
+}
 
 module.exports = {
   statesDaily,
+  statesInfo,
   usDaily,
 }

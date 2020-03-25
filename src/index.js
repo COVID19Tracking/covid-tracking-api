@@ -6,9 +6,9 @@ const handleRequest = require('./handlers')
 const { handleResponse } = require('./handlers/responses')
 const { runSearch, sheetVals } = require('./handlers/sheets')
 const {
-  addName, totalDate,
+  totalDate,
 } = require('./datasources/utils')
-const { statesDaily, usDaily } = require('./datasources/sheets')
+const { statesDaily, statesInfo, usDaily } = require('./datasources/sheets')
 const urls = require('./datasources/urls')
 
 const StateAPI = require('./datasources/state')
@@ -88,11 +88,7 @@ const redirectMap = new Map([
     .then(handleResponse(args)),
   ],
   ['/states/daily', statesDaily],
-  ['/states/info', {
-    ...sheets,
-    fixItems: _.map(addName),
-    sheetName: 'States',
-  }],
+  ['/states/info', statesInfo],
   ['/states/grade', grade],
   ['/us', { ...sheets, sheetName: 'US current' }],
   ['/us/daily', usDaily],
