@@ -40,7 +40,7 @@ const fixItems = _.flow(
   _.get('ListBucketResult.Contents'),
   _.filter(isScreenshot),
   _.map(fixItem),
-  _.groupBy('state'),
+  _.groupBy('state'), // This needs to go away.
 )
 
 module.exports = {

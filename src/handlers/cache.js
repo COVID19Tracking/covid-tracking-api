@@ -24,6 +24,7 @@ async function handleUpdate(args, updateData, returnRaw = false) {
 }
 
 async function checkCache(args, updateData) {
+  // If there is a search.date then extend TTL to max.
   const { cache, cacheId, ttl = 300 } = args
   // Figure out cache times.
   const list = await cache.list({ prefix: cacheId, limit: 1 })

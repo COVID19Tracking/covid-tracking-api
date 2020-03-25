@@ -77,7 +77,7 @@ const redirectMap = new Map([
     ...sheets,
     sheetName: 'Sheet1',
     worksheetId: '1-lvGZ3NgVlda4EcF5t_AVFLnBqz-TOl4YZxYH_mJF_4',
-    fixItems: _.orderBy(['publishDate'], ['desc']),
+    fixItems: _.orderBy(['publishDate', 'desc']),
   }],
   ['/states', (request, args) => Promise.all([
     sheetVals(grade, {}),
