@@ -68,8 +68,9 @@ const grade = {
   ),
 }
 
+const addDailyDateChecked = setFieldWith('dateChecked', 'date', dailyDate)
 const redirectMap = new Map([
-  ['/', 'https://covidtracking.com'],
+  ['/', 'https://covidtracking.com/api/'],
   ['/github', 'https://github.com/COVID19Tracking/covid-tracking-api'],
   ['/press', {
     ...sheets,
@@ -87,7 +88,7 @@ const redirectMap = new Map([
   ],
   ['/states/daily', {
     ...sheets,
-    fixItems: _.map(setFieldWith('dateChecked', 'date', dailyDate)),
+    fixItems: _.map(addDailyDateChecked),
     sheetName: 'States daily 4 pm ET',
   }],
   ['/states/info', {
@@ -99,6 +100,7 @@ const redirectMap = new Map([
   ['/us', { ...sheets, sheetName: 'US current' }],
   ['/us/daily', {
     ...sheets,
+    fixItems: _.map(addDailyDateChecked),
     sheetName: 'US daily 4 pm ET',
   }],
   ['/counties', { ...sheets, sheetName: 'Counties' }],
