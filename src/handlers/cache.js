@@ -3,7 +3,7 @@ const { log, processResult } = require('./fetch')
 const { runSearch } = require('./utils')
 const toStr = require('./csv')
 
-const CACHE_LIFETIME = 6000
+const CACHE_LIFETIME = 18000 // 5 hours
 
 // fetch, save, return result of toStr()
 async function handleUpdate(args, updateData, returnRaw = false) {
