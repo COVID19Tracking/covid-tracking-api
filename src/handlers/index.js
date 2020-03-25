@@ -37,6 +37,7 @@ const handleRequest = (redirectMap, event, cache) => {
   const args = {
     cache,
     cacheId: pathname + search,
+    ttl: route.ttl,
     ext,
     origin,
     pathname,

@@ -13,6 +13,7 @@ async function handleUpdate(args, updateData, returnRaw = false) {
     .then(processResult(args.route.fixItems))
     .then(runSearch(args.search))
   // save
+  if (_.isEmpty(data)) return Promise.reject(new Error('Missing data.'))
   const dataStr = await toStr(args, data)
   return cache.put(cacheId, dataStr, { expirationTtl: CACHE_LIFETIME })
     .then(() => log({

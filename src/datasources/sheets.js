@@ -9,7 +9,9 @@ const {
 const sheets = {
   app: 'sheets',
   worksheetId: '18oVRrHj3c183mHmq3m89_163yuYltLNlOmPerQ18E8w',
+  sheetName: 'Sheet1',
   key: global.GOOGLE_API_KEY,
+  ttl: 300,
 }
 
 
@@ -73,14 +75,27 @@ const statesInfo = {
   ...sheets,
   fixItems: fixStatesInfo,
   sheetName: 'States',
+  ttl: 900, // 15 minutes
 }
 const usDaily = {
   ...sheets,
   fixItems: fixDaily,
   sheetName: 'US daily 4 pm ET',
 }
+const cdcTests = {
+  ...sheets,
+  worksheetId: '16gBHQ7dCJK1psqEMasmLKiFlzoNKcfNujVpmHLHldSY',
+}
+const press = {
+  ...sheets,
+  worksheetId: '1-lvGZ3NgVlda4EcF5t_AVFLnBqz-TOl4YZxYH_mJF_4',
+  fixItems: _.orderBy(['publishDate'], ['desc']),
+  ttl: 3600, // 1 hour
+}
 
 module.exports = {
+  cdcTests,
+  press,
   statesDaily,
   statesInfo,
   usDaily,

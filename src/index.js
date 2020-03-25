@@ -8,7 +8,9 @@ const { runSearch, sheetVals } = require('./handlers/sheets')
 const {
   totalDate,
 } = require('./datasources/utils')
-const { statesDaily, statesInfo, usDaily } = require('./datasources/sheets')
+const {
+  cdcTests, press, statesDaily, statesInfo, usDaily,
+} = require('./datasources/sheets')
 const urls = require('./datasources/urls')
 
 const StateAPI = require('./datasources/state')
@@ -72,13 +74,9 @@ const grade = {
 
 const redirectMap = new Map([
   ['/', 'https://covidtracking.com/api/'],
+  ['/cdc/daily', cdcTests],
   ['/github', 'https://github.com/COVID19Tracking/covid-tracking-api'],
-  ['/press', {
-    ...sheets,
-    sheetName: 'Sheet1',
-    worksheetId: '1-lvGZ3NgVlda4EcF5t_AVFLnBqz-TOl4YZxYH_mJF_4',
-    fixItems: _.orderBy(['publishDate', 'desc']),
-  }],
+  ['/press', press],
   ['/states', (request, args) => Promise.all([
     sheetVals(grade, {}),
     sheetVals(states, {}).then(_.keyBy('state')),

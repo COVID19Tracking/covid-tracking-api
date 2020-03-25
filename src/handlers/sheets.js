@@ -10,9 +10,9 @@ const fixVals = _.flow(
 function getSheet({ worksheetId, sheetName, key }) {
   const url = `https://sheets.googleapis.com/v4/spreadsheets/${worksheetId}/values/${sheetName}?key=${key}`
   return fetchJson(url)
-    // .then((x) => console.log(x) || x)
     .then(rejectError)
     .then(fixVals) // Fix every time.
+    // .then((x) => console.log(x) || x)
 }
 
 function sheetVals({ fixItems, ...rest }, { search }) {
