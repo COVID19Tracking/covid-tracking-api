@@ -1,6 +1,9 @@
+const _ = require('lodash/fp')
 const { log, processResult } = require('./fetch')
 const { runSearch } = require('./utils')
 const toStr = require('./csv')
+
+const CACHE_LIFETIME = 6000
 
 // fetch, save, return result of toStr()
 async function handleUpdate(args, updateData, returnRaw = false) {
@@ -11,7 +14,7 @@ async function handleUpdate(args, updateData, returnRaw = false) {
     .then(runSearch(args.search))
   // save
   const dataStr = await toStr(args, data)
-  return cache.put(cacheId, dataStr, { expirationTtl: 3600 })
+  return cache.put(cacheId, dataStr, { expirationTtl: CACHE_LIFETIME })
     .then(() => log({
       cacheId,
       category: 'handleUpdate',
@@ -25,8 +28,8 @@ async function checkCache(args, updateData) {
   // Figure out cache times.
   const list = await cache.list({ prefix: cacheId, limit: 1 })
   const time = list.keys[0].expiration // will fail processes if not found.
-  const cacheTtl = time - (new Date() / 1000)
-  const age = 3600 - cacheTtl
+  const cacheTtl = _.round(time - (new Date() / 1000))
+  const age = CACHE_LIFETIME - cacheTtl
   const replace = age > ttl
   if (replace) {
     await log({
