@@ -1,16 +1,9 @@
 const _ = require('lodash/fp')
-const {
-  setFieldWith,
-} = require('prairie')
 const handleRequest = require('./handlers')
-const { handleResponse } = require('./handlers/responses')
-const { runSearch, sheetVals } = require('./handlers/sheets')
-const {
-  totalDate,
-} = require('./datasources/utils')
 const {
   cdcTests, press, statesDaily, statesInfo, usCurrent, usDaily,
 } = require('./datasources/sheets')
+const { grade, states } = require('./datasources/states')
 const urls = require('./datasources/urls')
 
 const StateAPI = require('./datasources/state')
@@ -53,38 +46,13 @@ const sheets = {
 }
 
 // ROUTER
-const states = {
-  ...sheets,
-  sheetName: 'States current',
-  fixItems: _.map(_.flow(
-    setFieldWith('dateModified', 'lastUpdateEt', totalDate),
-    setFieldWith('dateChecked', 'checkTimeEt', totalDate),
-  )),
-}
-const grade = {
-  ...sheets,
-  worksheetId: '1_6zwoekv0Mzpp6KEp4OziZizaWxGOxMoDT2C-iBvyEg',
-  sheetName: 'Sheet1',
-  fixItems: _.flow(
-    _.compact,
-    _.map(_.omit(['timeOfLastStateUpdateEt', 'lastCheckTimeEt', 'checker', 'doubleChecker'])),
-    _.keyBy('state'),
-  ),
-}
 
 const redirectMap = new Map([
   ['/', 'https://covidtracking.com/api/'],
   ['/cdc/daily', cdcTests],
   ['/github', 'https://github.com/COVID19Tracking/covid-tracking-api'],
   ['/press', press],
-  ['/states', (request, args) => Promise.all([
-    sheetVals(grade, {}),
-    sheetVals(states, {}).then(_.keyBy('state')),
-  ])
-    .then(_.flow(_.mergeAll, _.values, _.filter('state')))
-    .then(runSearch(args.search))
-    .then(handleResponse(args)),
-  ],
+  ['/states', states],
   ['/states/daily', statesDaily],
   ['/states/info', statesInfo],
   ['/states/grade', grade],

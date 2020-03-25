@@ -24,7 +24,7 @@ async function handleUpdate(args, updateData, returnRaw = false) {
     .then(() => (returnRaw ? data : dataStr)) // return data.
 }
 
-async function checkCache(args, updateData) {
+async function checkCache(args, updateData, value) {
   // If there is a search.date then extend TTL to max.
   const { cache, cacheId, ttl = 300 } = args
   // Figure out cache times.
@@ -41,13 +41,21 @@ async function checkCache(args, updateData) {
     })
   }
   // Save a new copy to the cache.
-  return replace ? handleUpdate(args, updateData) : Promise.resolve()
+  return replace ? handleUpdate(args, updateData) : Promise.resolve(value)
+}
+
+const loadCached = ({ cache, cacheId }) => cache.get(cacheId)
+
+// Load valid value. Expired is replaced.
+async function loadOrUpdateCached(args, updateData) {
+  const value = await loadCached(args)
+  if (!value) return handleUpdate(args, updateData)
+  return checkCache(args, updateData, value)
 }
 
 async function handleCacheRequest(event, args, updateData, handleResponse) {
-  const { cache, cacheId } = args
   // Look for saved value first.
-  const value = await cache.get(cacheId)
+  const value = await loadCached(args)
   // console.log('cache val', value)
   // If we did not find a value in the cache get a new copy, save it, respond with it.
   if (!value) return handleUpdate(args, updateData).then((data) => handleResponse(args, data))
@@ -60,4 +68,6 @@ module.exports = {
   checkCache,
   handleCacheRequest,
   handleUpdate,
+  loadCached,
+  loadOrUpdateCached,
 }

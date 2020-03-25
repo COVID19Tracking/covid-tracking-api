@@ -14,7 +14,6 @@ const sheets = {
   ttl: 300,
 }
 
-
 const addDailyDateChecked = setFieldWith('dateChecked', 'date', dailyDate)
 const addTotalResults = setField('totalTestResults', _.flow(_.at(['positive', 'negative']), _.sum))
 
@@ -100,6 +99,7 @@ const usCurrent = {
 module.exports = {
   cdcTests,
   press,
+  sheets,
   statesDaily,
   statesInfo,
   usCurrent,
