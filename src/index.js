@@ -16,7 +16,17 @@ const screenshots = require('./datasources/screenshots')
 
 /* globals COVID */
 
-const cache = typeof COVID === 'undefined' ? { get: console.log, put: console.log } : COVID
+const cacheFunc = (name) => _.flow(
+  _.partial(console.log, [name]),
+  () => Promise.resolve(null),
+)
+const stubCache = {
+  get: cacheFunc('get'),
+  put: cacheFunc('put'),
+  list: cacheFunc('list'),
+}
+
+const cache = typeof COVID === 'undefined' ? stubCache : COVID
 
 const dataSources = () => ({
   stateAPI: new StateAPI(),
@@ -109,9 +119,9 @@ const options = {
   forwardUnmatchedRequestsToOrigin: false,
 }
 
-function handler(request) {
+function handler(event) {
   try {
-    return handleRequest(redirectMap, request, cache)
+    return handleRequest(redirectMap, event, cache)
   } catch (err) {
     console.error(err)
     // Return the error stack as the response
@@ -120,5 +130,5 @@ function handler(request) {
   }
 }
 addEventListener('fetch', (event) => {
-  event.respondWith(handler(event.request))
+  event.respondWith(handler(event))
 })

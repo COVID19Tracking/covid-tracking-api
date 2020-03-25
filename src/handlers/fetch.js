@@ -8,7 +8,15 @@ const fetchJson = (url) => fetch(
 
 const fetchXml = (url) => fetch(
   url,
-  { cf: { cacheTtl: 300 }, headers: { Accept: 'text/xml' } },
+  { cf: { cacheEverything: true, cacheTtl: 300 }, headers: { Accept: 'text/xml' } },
+).then((response) => response.text())
+
+const fetchYaml = (url) => fetch(
+  url,
+  {
+    cf: { cacheEverything: true, cacheTtl: 120 },
+    headers: { Accept: 'application/x-yaml, text/yaml, text/html' },
+  },
 ).then((response) => response.text())
 
 function rejectError(x) {
@@ -20,9 +28,31 @@ function processResult(fixItems) {
   return fixItems
 }
 
+function postJson(url, data) {
+  return fetch(
+    url,
+    {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify(data),
+    },
+  )
+}
+function log(text) {
+  return postJson(
+    'https://hooks.slack.com/services/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',
+    { text },
+  )
+}
+
 module.exports = {
   fetchJson,
   fetchXml,
+  fetchYaml,
+  log,
+  postJson,
   processResult,
   rejectError,
 }

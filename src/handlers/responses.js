@@ -13,7 +13,8 @@ const resInit = _.defaultsDeep({
   },
 })
 
-const dataResponse = (res, init = {}) => new Response(JSON.stringify(res), resInit(init))
+const jsonTxtResponse = (res, init = {}) => new Response(res, resInit(init))
+const dataResponse = (res, init) => jsonTxtResponse(JSON.stringify(res), init)
 const csvResponse = (res, pathname) => new Response(res, resInit({
   headers: {
     'Content-Type': 'text/csv;charset=UTF-8',
@@ -28,23 +29,27 @@ const htmlResponse = (html) => new Response(html, {
   },
 })
 
-function handleResponse({ cache, ext, pathname }) {
-  const put = cache && _.isFunction(cache.put) ? cache.put : _.noop
-  const cacheArgs = { expirationTtl: 60 * 60 }
+function handleResponse({ ext, pathname }) {
   return (res) => {
     if (ext === 'csv') {
       return new Promise((resolve) => {
         jsonexport(res, (err, csv) => {
           if (err) return resolve(new Response(err.stack || err))
-          put(pathname, csv, cacheArgs)
           return resolve(csvResponse(csv, pathname))
         })
       })
     }
-    put(pathname, JSON.stringify(res), cacheArgs)
     // txt or html could be added.
     return dataResponse(res)
   }
+}
+
+function handleResponse2({ ext, pathname }, value) {
+  console.log('handleResponse2', pathname)
+  if (ext === 'csv') return csvResponse(value, pathname)
+  if (_.isString(value)) return jsonTxtResponse(value)
+  console.log('data')
+  return dataResponse(value)
 }
 
 module.exports = {
@@ -52,5 +57,7 @@ module.exports = {
   csvResponse,
   dataResponse,
   handleResponse,
+  handleResponse2,
   htmlResponse,
+  jsonTxtResponse,
 }

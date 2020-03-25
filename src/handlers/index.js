@@ -12,7 +12,8 @@ const getYaml = require('./yaml')
 // Apply headers
 // Return result
 
-const handleRequest = (redirectMap, request, cache) => {
+const handleRequest = (redirectMap, event, cache) => {
+  const { request } = event
   if (request.method === 'OPTIONS') return new Response('', { status: 204 })
   const { url } = request
   const {
@@ -50,7 +51,7 @@ const handleRequest = (redirectMap, request, cache) => {
   if (app === 'playground') return playground(route)
   if (app === 'sheets') return sheetVals(route, args).then(handleResponse(args))
   if (app === 'xml') return getXml(route).then(handleResponse(args))
-  if (app === 'yaml') return getYaml(route).then(handleResponse(args))
+  if (app === 'yaml') return getYaml(event, route, args)
 
   return fetch(request)
 }
