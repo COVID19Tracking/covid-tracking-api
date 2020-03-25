@@ -6,8 +6,9 @@ const handleRequest = require('./handlers')
 const { handleResponse } = require('./handlers/responses')
 const { runSearch, sheetVals } = require('./handlers/sheets')
 const {
-  addName, dailyDate, totalDate,
+  addName, totalDate,
 } = require('./datasources/utils')
+const { statesDaily, usDaily } = require('./datasources/sheets')
 
 const StateAPI = require('./datasources/state')
 const resolvers = require('./resolvers')
@@ -68,7 +69,6 @@ const grade = {
   ),
 }
 
-const addDailyDateChecked = setFieldWith('dateChecked', 'date', dailyDate)
 const redirectMap = new Map([
   ['/', 'https://covidtracking.com/api/'],
   ['/github', 'https://github.com/COVID19Tracking/covid-tracking-api'],
@@ -86,11 +86,7 @@ const redirectMap = new Map([
     .then(runSearch(args.search))
     .then(handleResponse(args)),
   ],
-  ['/states/daily', {
-    ...sheets,
-    fixItems: _.map(addDailyDateChecked),
-    sheetName: 'States daily 4 pm ET',
-  }],
+  ['/states/daily', statesDaily],
   ['/states/info', {
     ...sheets,
     fixItems: _.map(addName),
@@ -98,11 +94,7 @@ const redirectMap = new Map([
   }],
   ['/states/grade', grade],
   ['/us', { ...sheets, sheetName: 'US current' }],
-  ['/us/daily', {
-    ...sheets,
-    fixItems: _.map(addDailyDateChecked),
-    sheetName: 'US daily 4 pm ET',
-  }],
+  ['/us/daily', usDaily],
   ['/counties', { ...sheets, sheetName: 'Counties' }],
   ['/urls', {
     app: 'yaml',
