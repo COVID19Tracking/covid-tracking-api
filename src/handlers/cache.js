@@ -12,7 +12,10 @@ async function handleUpdate(args, updateData, returnRaw = false) {
   // save
   const dataStr = await toStr(args, data)
   return cache.put(cacheId, dataStr, { expirationTtl: 3600 })
-    .then(() => log(`Saved item to cache ${cacheId}`))
+    .then(() => log({
+      category: 'handleUpdate',
+      text: `Saved item to cache ${cacheId}`,
+    }))
     .then(() => (returnRaw ? data : dataStr)) // return data.
 }
 
@@ -25,7 +28,7 @@ async function checkCache(args, updateData) {
   const age = 3600 - cacheTtl
   const replace = age > ttl
   if (replace) {
-    await log(`${cacheId}, ttl: ${ttl}, age: ${age}`)
+    await log({ category: 'checkCache', text: `${cacheId}, ttl: ${ttl}, age: ${age}` })
   }
   // Save a new copy to the cache.
   return replace ? handleUpdate(args, updateData) : Promise.resolve()

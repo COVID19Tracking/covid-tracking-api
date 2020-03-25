@@ -38,12 +38,18 @@ function postJson(url, data) {
       },
       body: JSON.stringify(data),
     },
-  )
+  ).then((response) => response.json())
 }
-function log(text) {
+
+function log(item) {
+  const query = `mutation log($item: log_insert_input! ){
+    insert_log(objects: [$item]) {
+      affected_rows
+    }
+  }`
   return postJson(
-    'https://hooks.slack.com/services/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',
-    { text },
+    'https://covid-tracking.herokuapp.com/v1/graphql',
+    { query, variables: { item } },
   )
 }
 
