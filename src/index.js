@@ -9,6 +9,7 @@ const {
   addName, totalDate,
 } = require('./datasources/utils')
 const { statesDaily, usDaily } = require('./datasources/sheets')
+const urls = require('./datasources/urls')
 
 const StateAPI = require('./datasources/state')
 const resolvers = require('./resolvers')
@@ -96,12 +97,7 @@ const redirectMap = new Map([
   ['/us', { ...sheets, sheetName: 'US current' }],
   ['/us/daily', usDaily],
   ['/counties', { ...sheets, sheetName: 'Counties' }],
-  ['/urls', {
-    app: 'yaml',
-    url: 'https://raw.githubusercontent.com/COVID19Tracking/covid-tracking/master/urls.yaml',
-    multi: true,
-    args: { json: true }, // Duplicate keys will override values rather than throwing an error.
-  }],
+  ['/urls', urls],
   ['/screenshots', screenshots],
   [graphQLOptions.baseEndpoint, graphQLOptions],
   // Playground.
