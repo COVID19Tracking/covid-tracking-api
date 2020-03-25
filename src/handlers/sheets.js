@@ -12,7 +12,7 @@ function getSheet({ worksheetId, sheetName, key }) {
   return fetchJson(url)
     // .then((x) => console.log(x) || x)
     .then(rejectError)
-    .then(fixVals)
+    .then(fixVals) // Fix every time.
 }
 
 function sheetVals({ fixItems, ...rest }, { search }) {
@@ -23,6 +23,7 @@ function sheetVals({ fixItems, ...rest }, { search }) {
 }
 
 module.exports = {
+  getSheet,
   runSearch,
   sheetVals,
 }

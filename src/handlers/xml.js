@@ -1,4 +1,4 @@
-const _ = require('lodash/fp')
+// const _ = require('lodash/fp')
 const parser = require('fast-xml-parser')
 const { fetchXml } = require('./fetch')
 
@@ -21,12 +21,9 @@ function parse(xmlText, options = {}) {
   })
 }
 
-function getXml({ fixItems, url }) {
+function getXml({ url }) {
   // console.log(url)
-  return fetchXml(url)
-    // .then((x) => console.log(x) || x)
-    .then(parse)
-    .then((x) => (_.isFunction(fixItems) ? fixItems(x) : x))
+  return fetchXml(url).then(parse)
 }
 
 module.exports = getXml

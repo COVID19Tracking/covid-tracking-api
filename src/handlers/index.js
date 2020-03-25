@@ -1,10 +1,11 @@
 const _ = require('lodash/fp')
-const { sheetVals } = require('./sheets')
-const { dataResponse, handleResponse } = require('./responses')
+const { getSheet } = require('./sheets')
+const { dataResponse, handleResponse2 } = require('./responses')
 const apollo = require('./apollo')
 const playground = require('./playground')
 const getXml = require('./xml')
 const getYaml = require('./yaml')
+const { handleCacheRequest } = require('./cache')
 
 /* globals fetch Response */
 
@@ -40,6 +41,7 @@ const handleRequest = (redirectMap, event, cache) => {
     origin,
     pathname,
     path,
+    route,
     search: _.fromPairs([...searchParams.entries()]),
     responseType: (ext === 'csv') ? ext : 'json',
   }
@@ -47,11 +49,16 @@ const handleRequest = (redirectMap, event, cache) => {
 
   const { app } = route
 
+  function getApp(updateFunc) {
+    const updateData = () => updateFunc(args.route)
+    return handleCacheRequest(event, args, updateData, handleResponse2)
+  }
+
   if (app === 'apollo') return apollo(request, route)
   if (app === 'playground') return playground(route)
-  if (app === 'sheets') return sheetVals(route, args).then(handleResponse(args))
-  if (app === 'xml') return getXml(route).then(handleResponse(args))
-  if (app === 'yaml') return getYaml(event, route, args)
+  if (app === 'sheets') return getApp(getSheet)
+  if (app === 'xml') return getApp(getXml)
+  if (app === 'yaml') return getApp(getYaml)
 
   return fetch(request)
 }
