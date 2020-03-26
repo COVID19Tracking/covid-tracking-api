@@ -4,7 +4,10 @@ const { getVals, runSearch } = require('./utils')
 
 const fixVals = _.flow(
   _.get('values'),
-  ([keys, ...values]) => _.map(_.zipObject(_.map(_.camelCase, keys)), _.map(getVals, values)),
+  ([keys, ...values]) => _.map(
+    _.zipObject(_.map(_.camelCase, keys)), // process keys
+    _.map(getVals, values), // process values
+  ),
 )
 
 function getSheet({ worksheetId, sheetName, key }) {

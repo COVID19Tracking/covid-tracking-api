@@ -25,7 +25,7 @@ const grade = {
   ),
 }
 
-const getStates = (request, args) => Promise.all([
+const getStates = (event, args) => Promise.all([
   sheetVals(grade, {}),
   sheetVals(states, {}).then(_.keyBy('state')),
 ])

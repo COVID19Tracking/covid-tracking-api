@@ -42,10 +42,11 @@ To deploy using serverless add a [`serverless.yml`](https://serverless.com/frame
 #### Testing locally
 `yarn global add cloudflare-work-local`
 `yarn global add nodemon`
-`wrangler build && cloudflare-worker-local worker/script.js covid.cape.io 3000`
+`wrangler build && cloudflare-worker-local worker/script.js covid.cape.io 3000 wrangler.toml staging`
 
 `nodemon --watch worker/script.js --signal SIGHUP --exec 'cloudflare-worker-local worker/script.js covid.cape.io 3000'`
 
 #### KV Cache Keys
 
 `wrangler kv:key list --binding=COVID --env=staging`
+`wrangler kv:key delete --binding=COVID --env=staging "/screenshots"`

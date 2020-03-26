@@ -45,10 +45,10 @@ function handleResponse({ ext, pathname }) {
 }
 
 function handleResponse2({ ext, pathname }, value) {
-  console.log('handleResponse2', pathname)
+  // console.log('handleResponse2', pathname)
   if (ext === 'csv') return csvResponse(value, pathname)
   if (_.isString(value)) return jsonTxtResponse(value)
-  console.log('data')
+  // console.log('data')
   return dataResponse(value)
 }
 

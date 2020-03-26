@@ -37,12 +37,12 @@ const handleRequest = (redirectMap, event, cache) => {
   const args = {
     cache,
     cacheId: pathname + search,
-    ttl: route.ttl,
     ext,
     origin,
     pathname,
     path,
     route,
+    ttl: route.ttl,
     search: _.fromPairs([...searchParams.entries()]),
     responseType: (ext === 'csv') ? ext : 'json',
   }

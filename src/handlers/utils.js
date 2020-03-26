@@ -16,9 +16,13 @@ function runSearch(search) {
     (x) => (x.length === 1 ? x[0] : x),
   )
 }
-
+function runFinalPrep(args) {
+  if (!args.route || !_.isFunction(args.route.finalPrep)) return _.identity
+  return _.partial(args.route.finalPrep, [args])
+}
 module.exports = {
   getVal,
   getVals: _.map(getVal),
+  runFinalPrep,
   runSearch,
 }
