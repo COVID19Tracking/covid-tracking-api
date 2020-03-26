@@ -5,6 +5,7 @@ const toStr = require('./csv')
 
 const CACHE_LIFETIME = 18000 // 5 hours
 
+const NO_DATA = { error: true, message: 'No data available. Try changing query args.' }
 // fetch, save, return result of toStr()
 async function handleUpdate(args, updateData, returnRaw = false) {
   const { cache, cacheId } = args
@@ -14,11 +15,7 @@ async function handleUpdate(args, updateData, returnRaw = false) {
     .then(runSearch(args.search))
     .then(runFinalPrep(args))
   // save
-  if (_.isEmpty(data)) {
-    console.log(data)
-    return Promise.reject(new Error('Missing data.'))
-  }
-  const dataStr = await toStr(args, data)
+  const dataStr = await toStr(args, _.isEmpty(data) ? NO_DATA : data)
   return cache.put(cacheId, dataStr, { expirationTtl: CACHE_LIFETIME })
     .then(() => log({
       cacheId,
