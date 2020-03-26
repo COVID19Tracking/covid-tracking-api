@@ -15,7 +15,9 @@ const sheets = {
 }
 
 const addDailyDateChecked = setFieldWith('dateChecked', 'date', dailyDate)
-const addTotalResults = setField('totalTestResults', _.flow(_.at(['positive', 'negative']), _.sum))
+const sumFields = (fields) => _.flow(_.at(fields), _.sum)
+const addTotalResults = setField('totalTestResults', sumFields(['positive', 'negative']))
+const addOldTotal = setField('total', sumFields(['positive', 'negative', 'pending']))
 
 const newVals = {
   deathIncrease: null,
@@ -47,6 +49,7 @@ function fixDaily(items) {
     _.map(_.flow(
       addDailyDateChecked,
       addTotalResults,
+      addOldTotal,
       (item) => {
         const increases = getNewVals(item, previous)
         previous = item
@@ -94,9 +97,15 @@ const press = {
 const usCurrent = {
   ...sheets,
   sheetName: 'US current',
-  fixItems: _.map(addTotalResults),
+  fixItems: _.map(_.flow(
+    _.set('notes', 'Please stop using the "total" and "posNeg" fields. Use "totalTestResults" instead.'),
+    addTotalResults,
+    addOldTotal,
+  )),
 }
 module.exports = {
+  addOldTotal,
+  addTotalResults,
   cdcTests,
   press,
   sheets,

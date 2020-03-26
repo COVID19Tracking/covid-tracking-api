@@ -9,11 +9,13 @@ const NO_DATA = { error: true, message: 'No data available. Try changing query a
 // fetch, save, return result of toStr()
 async function handleUpdate(args, updateData, returnRaw = false) {
   const { cache, cacheId } = args
+  // @TODO If there is a search query try loading raw data cache first.
   // fetch new data
   const data = await updateData(args)
     .then(processResult(args.route.fixItems))
     .then(runSearch(args.search))
     .then(runFinalPrep(args))
+  // @TODO Validate result before saving it.
   // save
   const dataStr = await toStr(args, _.isEmpty(data) ? NO_DATA : data)
   return cache.put(cacheId, dataStr, { expirationTtl: CACHE_LIFETIME })
