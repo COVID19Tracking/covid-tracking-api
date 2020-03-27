@@ -40,6 +40,9 @@ Currently each and every request is passed through [Netlify](https://docs.netlif
 To deploy using serverless add a [`serverless.yml`](https://serverless.com/framework/docs/providers/cloudflare/) file.
 
 #### Testing locally
+
+Install [cloudflare-worker-local](https://github.com/gja/cloudflare-worker-local)
+
 `yarn global add cloudflare-work-local`
 `yarn global add nodemon`
 `wrangler build && cloudflare-worker-local worker/script.js covid.cape.io 3000 wrangler.toml staging`
@@ -50,3 +53,4 @@ To deploy using serverless add a [`serverless.yml`](https://serverless.com/frame
 
 `wrangler kv:key list --binding=COVID --env=staging`
 `wrangler kv:key delete --binding=COVID --env=staging "/screenshots"`
+`wrangler kv:key delete --binding=COVID --env=production "/press"`

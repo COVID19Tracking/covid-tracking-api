@@ -52,8 +52,29 @@ function log(item) {
     { query, variables: { item } },
   )
 }
+function cacheLog(item) {
+  const { category, id } = item
+  const query = `mutation cache($item: cache_log_insert_input! ){
+    insert_cache_log(
+      objects: [$item]
+      on_conflict: {
+        constraint: cache_log_pkey,
+        update_columns: [text, updated_at]
+        _inc: {likes: 1}
+      }
+    ) { affected_rows }
+    update_cache_log(
+      _inc: { count: 1 },
+      where: { id: {_eq: $id }, category: {_eq: $category } }
+    ) { returning { count } }`
+  return postJson(
+    'https://covid-tracking.herokuapp.com/v1/graphql',
+    { query, variables: { item, category, id } },
+  )
+}
 
 module.exports = {
+  cacheLog,
   fetchJson,
   fetchXml,
   fetchYaml,

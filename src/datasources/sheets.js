@@ -2,6 +2,7 @@ const _ = require('lodash/fp')
 const {
   setField, setFieldWith,
 } = require('prairie')
+const hash = require('object-hash')
 const {
   addFips, addName, dailyDate,
 } = require('./utils')
@@ -18,6 +19,7 @@ const addDailyDateChecked = setFieldWith('dateChecked', 'date', dailyDate)
 const sumFields = (fields) => _.flow(_.at(fields), _.sum)
 const addTotalResults = setField('totalTestResults', sumFields(['positive', 'negative']))
 const addOldTotal = setField('total', sumFields(['positive', 'negative', 'pending']))
+const addHash = setField('hash', hash)
 
 const newVals = {
   deathIncrease: null,
@@ -50,6 +52,7 @@ function fixDaily(items) {
       addDailyDateChecked,
       addTotalResults,
       addOldTotal,
+      addFips,
       (item) => {
         const increases = getNewVals(item, previous)
         previous = item
@@ -92,12 +95,13 @@ const press = {
   ...sheets,
   worksheetId: '1-lvGZ3NgVlda4EcF5t_AVFLnBqz-TOl4YZxYH_mJF_4',
   fixItems: _.orderBy(['publishDate'], ['desc']),
-  ttl: 3600, // 1 hour
+  ttl: 180, // 3 minutes.
 }
 const usCurrent = {
   ...sheets,
   sheetName: 'US current',
   fixItems: _.map(_.flow(
+    addHash,
     _.set('notes', 'Please stop using the "total" and "posNeg" fields. Use "totalTestResults" instead.'),
     addTotalResults,
     addOldTotal,

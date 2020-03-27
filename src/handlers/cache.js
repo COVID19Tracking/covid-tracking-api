@@ -1,65 +1,77 @@
 const _ = require('lodash/fp')
-const { log, processResult } = require('./fetch')
+const { cacheLog, processResult } = require('./fetch')
 const { runFinalPrep, runSearch } = require('./utils')
 const toStr = require('./csv')
 
 const CACHE_LIFETIME = 18000 // 5 hours
 
 const NO_DATA = { error: true, message: 'No data available. Try changing query args.' }
-// fetch, save, return result of toStr()
-async function handleUpdate(args, updateData, returnRaw = false) {
+
+async function save(args, data, returnRaw = false) {
   const { cache, cacheId } = args
-  // @TODO If there is a search query try loading raw data cache first.
-  // fetch new data
-  const data = await updateData(args)
-    .then(processResult(args.route.fixItems))
-    .then(runSearch(args.search))
-    .then(runFinalPrep(args))
-  // @TODO Validate result before saving it.
-  // save
   const dataStr = await toStr(args, _.isEmpty(data) ? NO_DATA : data)
   return cache.put(cacheId, dataStr, { expirationTtl: CACHE_LIFETIME })
-    .then(() => log({
-      cacheId,
+    .then(() => cacheLog({
+      id: cacheId,
       category: 'handleUpdate',
       text: 'Saved item to cache',
     }))
     .then(() => (returnRaw ? data : dataStr)) // return data.
 }
 
-async function checkCache(args, updateData, value) {
-  // If there is a search.date then extend TTL to max.
-  const { cache, cacheId, ttl = 300 } = args
-  // Figure out cache times.
+// fetch, fixItems, search, finalPrep, save, return result of toStr()
+// @TODO If there is a search query try loading raw data cache first.
+const handleUpdate = (args, updateData, returnRaw) => updateData(args)
+  .then(processResult(args.route.fixItems))
+  .then(runSearch(args.search))
+  .then(runFinalPrep(args))
+  // @TODO Validate result before saving it.
+  // save
+  .then((data) => save(args, data, returnRaw))
+
+async function cacheLife({ cache, cacheId, ttl = 300 }) {
+  if (!cache.list) return { age: 222, ttl, replace: false }
+  // @TODO If there is a search.date then extend TTL to max.
   const list = await cache.list({ prefix: cacheId, limit: 1 })
   const time = list.keys[0].expiration // will fail processes if not found.
   const cacheTtl = _.round(time - (new Date() / 1000))
   const age = CACHE_LIFETIME - cacheTtl
   const replace = age > ttl
   if (replace) {
-    await log({
-      cacheId,
+    await cacheLog({
+      id: cacheId,
       category: 'checkCache',
       text: `replace ttl: ${ttl}, age: ${age}`,
     })
   }
+  return {
+    time, cacheTtl, age, replace, ttl,
+  }
+}
+async function checkCache(args, updateData, value, returnRaw) {
+  // Figure out cache times.
+  const { replace } = await cacheLife(args)
+  console.log('cache refresh', replace)
   // Save a new copy to the cache.
-  return replace ? handleUpdate(args, updateData) : Promise.resolve(value)
+  return replace ? handleUpdate(args, updateData, returnRaw) : value
 }
 
-const loadCached = ({ cache, cacheId }) => cache.get(cacheId)
+const loadCached = ({ cache, cacheId }, type) => cache.get(cacheId, type)
+  // Sometimes it is not returned as an object?!? Maybe only locally.
+  .then((x) => (type === 'json' && _.isString(x) ? JSON.parse(x) : x))
 
-// Load valid value. Expired is replaced.
+// Load valid JSON value. Expired is replaced.
 async function loadOrUpdateCached(args, updateData) {
-  const value = await loadCached(args)
-  if (!value) return handleUpdate(args, updateData)
-  return checkCache(args, updateData, value)
+  const value = await loadCached(args, 'json')
+  console.log('cacheVal', !!value)
+  if (!value) return handleUpdate(args, updateData, true)
+  return checkCache(args, updateData, value, true)
 }
 
 async function handleCacheRequest(event, args, updateData, handleResponse) {
   // Look for saved value first.
   const value = await loadCached(args)
-  // console.log('cache val', value)
+  console.log('cache val', !!value)
   // If we did not find a value in the cache get a new copy, save it, respond with it.
   if (!value) return handleUpdate(args, updateData).then((data) => handleResponse(args, data))
   // Found value. Respond early. Always (for now anyway).

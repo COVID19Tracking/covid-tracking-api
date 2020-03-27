@@ -46,7 +46,7 @@ const handleRequest = (redirectMap, event, cache) => {
     search: _.fromPairs([...searchParams.entries()]),
     responseType: (ext === 'csv') ? ext : 'json',
   }
-  if (_.isFunction(route)) return route(request, args)
+  if (_.isFunction(route)) return route(event, args)
 
   const { app } = route
 
