@@ -19,13 +19,12 @@
     "eslint-plugin-import": "^2.20.1",
     "eslint-plugin-json": "^2.1.1",
     "eslint-plugin-lodash-fp": "^2.2.0-a1",
-    "isomorphic-fetch": "^2.2.1",
-    "prettier": "^1.18.2"
+    "isomorphic-fetch": "^2.2.1"
   },
   "dependencies": {
     "apollo-datasource-rest": "^0.8.0",
     "apollo-server-cloudflare": "^2.11.0",
-    "date-fns": "^2.11.0",
+    "date-fns": "^2.11.1",
     "date-fns-tz": "^1.0.10",
     "fast-xml-parser": "^3.16.0",
     "graphql-type-json": "^0.3.1",
