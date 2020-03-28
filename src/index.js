@@ -1,5 +1,5 @@
-const _ = require('lodash/fp')
 const handleRequest = require('./handlers')
+const cache = require('./kv-cache')
 const {
   cdcTests, press, statesDaily, statesInfo, usCurrent, usDaily,
 } = require('./datasources/sheets')
@@ -10,20 +10,6 @@ const StateAPI = require('./datasources/state')
 const resolvers = require('./resolvers')
 const typeDefs = require('./schema')
 const screenshots = require('./datasources/screenshots')
-
-/* globals COVID */
-
-const cacheFunc = (name) => _.flow(
-  _.partial(console.log, [name]),
-  () => Promise.resolve(null),
-)
-const stubCache = {
-  get: cacheFunc('get'),
-  put: cacheFunc('put'),
-  list: cacheFunc('list'),
-}
-
-const cache = typeof COVID === 'undefined' ? stubCache : COVID
 
 const dataSources = () => ({
   stateAPI: new StateAPI(),
