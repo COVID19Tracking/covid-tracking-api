@@ -1,6 +1,7 @@
 const _ = require('lodash/fp')
-const { fetchJson, processResult, rejectError } = require('./fetch')
+const { fetchJson, rejectError } = require('./fetch')
 const { getVals, runSearch } = require('./utils')
+const { loadOrUpdateCached } = require('./cache')
 
 const fixVals = _.flow(
   _.get('values'),
@@ -18,12 +19,22 @@ function getSheet({ worksheetId, sheetName, key }) {
     // .then((x) => console.log(x) || x)
 }
 
-function sheetVals({ fixItems, ...rest }, { search }) {
-  return getSheet(rest)
-    .then(processResult(fixItems))
-    .then(runSearch(search))
-    .catch((err) => console.log(err) || err)
-}
+// function sheetVals({ fixItems, ...rest }, { search }) {
+//   return getSheet(rest)
+//     .then(processResult(fixItems))
+//     .then(runSearch(search))
+//     .catch((err) => console.log(err) || err)
+// }
+
+const sheetVals = _.curry((route, cacheId, args) => loadOrUpdateCached(
+  {
+    ...args,
+    search: null,
+    route,
+    cacheId,
+  },
+  () => getSheet(route),
+))
 
 module.exports = {
   getSheet,

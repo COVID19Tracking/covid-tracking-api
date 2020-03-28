@@ -4,8 +4,8 @@ const {
   addOldTotal, addTotalResults, sheets,
 } = require('./sheets')
 const { addFips, totalDate } = require('./utils')
-const { handleCacheRequest, loadOrUpdateCached } = require('../handlers/cache')
-const { getSheet } = require('../handlers/sheets')
+const { handleCacheRequest } = require('../handlers/cache')
+const { sheetVals } = require('../handlers/sheets')
 const { handleResponse2 } = require('../handlers/responses')
 
 const fixState = _.flow(
@@ -35,21 +35,14 @@ const grade = {
   ),
 }
 
-const sheetVals = (args, route, cacheId) => loadOrUpdateCached(
-  {
-    ...args, search: null, route, cacheId,
-  },
-  () => getSheet(route),
-)
-
 const prepResult = _.flow(
   _.mergeAll,
   _.values,
   _.filter('state'),
 )
 const updateFunc = (args) => Promise.all([
-  sheetVals(args, grade, '/states/grade'),
-  sheetVals(args, states, 'states'),
+  sheetVals(grade, '/states/grade', args),
+  sheetVals(states, 'states', args),
 ])
   .then(prepResult)
 
@@ -60,5 +53,6 @@ function getStates(event, args) {
 
 module.exports = {
   grade,
+  statesUpdate: updateFunc,
   states: getStates,
 }
