@@ -52,5 +52,6 @@ Install [cloudflare-worker-local](https://github.com/gja/cloudflare-worker-local
 #### KV Cache Keys
 
 `wrangler kv:key list --binding=COVID --env=staging`
+`wrangler kv:key list --binding=COVID --env=production --prefix="/states.json"`
 `wrangler kv:key delete --binding=COVID --env=staging "/screenshots"`
 `wrangler kv:key delete --binding=COVID --env=production "/press"`
