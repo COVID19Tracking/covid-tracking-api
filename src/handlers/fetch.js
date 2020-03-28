@@ -74,7 +74,28 @@ function cacheLog(item) {
     { query, variables: { item, category, id } },
   ).then(console.log)
 }
-
+function refererLog(referer) {
+  const val = referer || 'none'
+  const query = `mutation referer($item: referer_insert_input!, $referer: String ){
+    insert_referer(
+        objects: [$item],
+        on_conflict: {
+          constraint: referer_pkey
+          update_columns: [updated_at]
+        }
+    ) { affected_rows }
+      update_referer(
+        _inc: { count: 1 },
+        where: { referer: {_eq: $referer } }
+      ) {
+      returning { count }
+    }
+  }`
+  return postJson(
+    'https://covid-tracking.herokuapp.com/v1/graphql',
+    { query, variables: { item: { referer: val }, referer: val } },
+  ).then(console.log)
+}
 module.exports = {
   cacheLog,
   fetchJson,
@@ -83,5 +104,6 @@ module.exports = {
   log,
   postJson,
   processResult,
+  refererLog,
   rejectError,
 }
