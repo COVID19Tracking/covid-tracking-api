@@ -18,7 +18,12 @@ const addUrl = setField(
 
 const addDate = setFieldWith('dateChecked', 'filename', _.flow(
   _.split('-'), // state-date-time.png
-  (x) => screenshotDate((x[1] + x[2]).split('.')[0]),
+  (x) => {
+    const dateStr = (x[1] + x[2]).split('.')[0]
+    if (/^\d+/.test(dateStr)) return screenshotDate(dateStr)
+    console.error('INVALID DATE', dateStr)
+    return null
+  },
 ))
 
 const fixItem = _.flow(
