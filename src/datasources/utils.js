@@ -8,18 +8,30 @@ const toDate = _.flow(
   zonedTimeToUtc('America/New_York'),
   formatISO,
 )
+function tryParse(templateStr) {
+  return (dateStr) => {
+    try {
+      return parse(new Date(), templateStr, dateStr)
+    } catch (e) {
+      console.error(e)
+      return null
+    }
+  }
+}
 
 const dailyDate = _.flow(
-  parse(new Date(), 'yyyyMMdd'),
+  tryParse('yyyyMMdd'),
   addHours(16),
   toDate,
 )
 const totalDate = _.flow(
-  (x) => parse(new Date(), 'M/dd HH:mm', x),
+  tryParse('M/dd HH:mm'),
   toDate,
 )
 const screenshotDate = _.flow(
-  parse(new Date(), 'yyyyMMddHHmmss'),
+  // remove all letters.
+  _.replace(/^[a-zA-Z]+/, ''),
+  tryParse('yyyyMMddHHmmss'),
   toDate,
 )
 const addName = setFieldWith('name', 'state', nameByCode)
