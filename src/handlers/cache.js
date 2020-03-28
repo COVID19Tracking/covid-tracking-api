@@ -1,5 +1,5 @@
 const _ = require('lodash/fp')
-const { cacheLog, processResult } = require('./fetch')
+const { cacheLog, processResult, refererLog } = require('./fetch')
 const { runFinalPrep, runSearch } = require('./utils')
 const toStr = require('./csv')
 
@@ -78,7 +78,8 @@ async function handleCacheRequest(event, args, updateData, handleResponse) {
   // If we did not find a value in the cache get a new copy, save it, respond with it.
   if (!value) return handleUpdate(args, updateData).then((data) => handleResponse(args, data))
   // Found value. Respond early. Always (for now anyway).
-  event.waitUntil(checkCache(args, updateData))
+  event.waitUntil(checkCache(args, updateData)
+    .then(() => refererLog(event.request.headers.get('referer'))))
   return handleResponse(args, value)
 }
 
