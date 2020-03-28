@@ -21,8 +21,8 @@ async function save(args, data, returnRaw = false) {
 
 // fetch, fixItems, search, finalPrep, save, return result of toStr()
 // @TODO If there is a search query try loading raw data cache first.
-const handleUpdate = (args, updateData, returnRaw, oldValue) => updateData(args)
-  .then(processResult(args.route.fixItems, oldValue))
+const handleUpdate = (args, updateData, returnRaw) => updateData(args)
+  .then(processResult(args.route.fixItems))
   .then(runSearch(args.search))
   .then(runFinalPrep(args))
   // @TODO Validate result before saving it.
@@ -48,20 +48,17 @@ async function cacheLife({ cache, cacheId, ttl = 300 }) {
     time, cacheTtl, age, replace, ttl,
   }
 }
-const parseJson = (x) => (_.isString(x) ? JSON.parse(x) : x)
-
 async function checkCache(args, updateData, value, returnRaw) {
   // Figure out cache times.
   const { replace } = await cacheLife(args)
   console.log('cache refresh', replace)
   // Save a new copy to the cache.
-  const oldValue = (args.ext !== 'csv') ? parseJson(value) : null
-  return replace ? handleUpdate(args, updateData, returnRaw, oldValue) : value
+  return replace ? handleUpdate(args, updateData, returnRaw) : value
 }
 
 const loadCached = ({ cache, cacheId }, type) => cache.get(cacheId, type)
   // Sometimes it is not returned as an object?!? Maybe only locally.
-  .then((x) => (type === 'json' ? parseJson(x) : x))
+  .then((x) => (type === 'json' && _.isString(x) ? JSON.parse(x) : x))
 
 // Load valid JSON value. Expired is replaced.
 async function loadOrUpdateCached(args, updateData) {

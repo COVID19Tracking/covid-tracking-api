@@ -49,7 +49,6 @@ function fixDaily(items) {
   return _.flow(
     _.orderBy(['date'], ['asc']),
     _.map(_.flow(
-      addHash,
       addDailyDateChecked,
       addTotalResults,
       addOldTotal,
@@ -98,27 +97,15 @@ const press = {
   fixItems: _.orderBy(['publishDate'], ['desc']),
   ttl: 180, // 3 minutes.
 }
-const fixUsCurrent = _.flow(
-  _.set('notes', 'Please stop using the "total" and "posNeg" fields. Use "totalTestResults" instead.'),
-  addTotalResults,
-  addOldTotal,
-)
-
-// lastIncrementalUpdate
-
-function fixUsCurrentItems(newValues, oldVals) {
-  const newHash = hash(newValues[0])
-  const oldHash = oldVals && oldVals[0].hash
-  if (oldHash !== newHash) {
-    return [fixUsCurrent({ ...newValues[0], hash: newHash, lastModified: new Date() })]
-  }
-  return oldVals
-}
-
 const usCurrent = {
   ...sheets,
   sheetName: 'US current',
-  fixItems: fixUsCurrentItems,
+  fixItems: _.map(_.flow(
+    addHash,
+    _.set('notes', 'Please stop using the "total" and "posNeg" fields. Use "totalTestResults" instead.'),
+    addTotalResults,
+    addOldTotal,
+  )),
 }
 module.exports = {
   addOldTotal,
