@@ -29,6 +29,7 @@ function getSheet({ worksheetId, sheetName, key }) {
 const sheetVals = _.curry((route, cacheId, args) => loadOrUpdateCached(
   {
     ...args,
+    ext: 'json',
     search: null,
     route,
     cacheId,
