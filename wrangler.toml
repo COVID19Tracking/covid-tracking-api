@@ -1,0 +1,19 @@
+type = "webpack"
+account_id = "04b8381616db8b4cf5ca0bac4f1f675a"
+webpack_config = "webpack.config.js"
+
+[env.staging]
+name = "covid-dev"
+workers_dev = true
+kv-namespaces = [
+  { binding = "COVID", id = "adce32d4c61c45ad8bab07459ef4313c" }
+]
+
+[env.production]
+name = "covid"
+zone_id = "ded9dec3d65cb1dbe6b9a084f9f02dbf"
+route = "covid.cape.io/*"
+workers_dev = false
+kv-namespaces = [
+  { binding = "COVID", id = "10eca569f165426098d0428830aa4ef5" }
+]
