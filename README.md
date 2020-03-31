@@ -24,7 +24,14 @@ If you want to filter the `/api/us/daily` you can add a query param like `?state
 
 ## Technical How
 
-Currently each and every request is passed through [Netlify](https://docs.netlify.com/routing/redirects/rewrites-proxies/) to [Cloudflare](https://workers.cloudflare.com/) that makes an API request to Google and then cleans it up and decides format before returning results. A minimal cache is configured.
+Currently each and every request is passed through [Netlify](https://docs.netlify.com/routing/redirects/rewrites-proxies/) to [Cloudflare](https://workers.cloudflare.com/) that makes an API request to fetch the resource and then cleans it up and decides on format (CSV/JSON) before returning results. For caching we are utilizing a KV store.
+
+## Staging
+
+
+## Errors
+
+There is no error console unfortunately.
 
 #### Easy Deploy w/ Wrangler
 

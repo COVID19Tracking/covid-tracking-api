@@ -8,4 +8,3 @@ wasm-pack.log
 worker/
 node_modules/
 .cargo-ok
-wrangler.toml
