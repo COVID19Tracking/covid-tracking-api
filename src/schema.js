@@ -64,13 +64,22 @@ const typeDefs = gql`
 
   type USDailyDataPoint implements DataPoint {
     date: Date
-    statesReporting: Int
-    positives: Int
-    negatives: Int
-    positivesPlusNegatives: Int
+    states: Int
+    positive: Int
+    negative: Int
+    posNeg: Int
     pending: Int
-    deaths: Int
+    hospitalized: Int
+    death: Int
     total: Int
+    hash: String
+    dateChecked: Date
+    totalTestResults: Int
+    deathIncrease: Int
+    hospitalizedIncrease: Int
+    negativeIncrease: Int
+    positiveIncrease: Int
+    totalTestResultsIncrease: Int
   }
 
   type USTotalDataPoint implements DataPoint {
