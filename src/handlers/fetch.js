@@ -8,7 +8,10 @@ const fetchJson = (url) => fetch(
 
 const fetchXml = (url) => fetch(
   url,
-  { cf: { cacheEverything: true, cacheTtl: 300 }, headers: { Accept: 'text/xml' } },
+  {
+    cf: { cacheEverything: true, cacheTtl: 300 },
+    headers: { Accept: 'text/xml' },
+  },
 ).then((response) => response.text())
 
 const fetchYaml = (url) => fetch(
