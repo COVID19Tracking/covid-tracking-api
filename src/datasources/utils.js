@@ -1,7 +1,10 @@
 const _ = require('lodash/fp')
+const {
+  copy, move, setField, setFieldWith,
+} = require('prairie')
 const { addHours, formatISO, parse } = require('date-fns/fp')
 const { zonedTimeToUtc } = require('date-fns-tz/fp')
-const { setFieldWith } = require('prairie')
+const hash = require('object-hash')
 const { fipsByCode, nameByCode } = require('./stateNames')
 
 const toDate = _.flow(
@@ -10,6 +13,7 @@ const toDate = _.flow(
 )
 function tryParse(templateStr) {
   return (dateStr) => {
+    console.log(dateStr)
     try {
       return parse(new Date(), templateStr, dateStr)
     } catch (e) {
@@ -36,10 +40,25 @@ const screenshotDate = _.flow(
 )
 const addName = setFieldWith('name', 'state', nameByCode)
 const addFips = setFieldWith('fips', 'state', fipsByCode)
+const addDailyDateChecked = setFieldWith('dateChecked', 'date', dailyDate)
+const sumFields = (fields) => _.flow(_.at(fields), _.sum)
+const addTotalResults = setField('totalTestResults', sumFields(['positive', 'negative']))
+const addOldTotal = setField('total', sumFields(['positive', 'negative', 'pending']))
+const addHash = setField('hash', hash)
+
+const compatibility = _.flow(
+  move('deaths', 'death'),
+  copy('hospitalizedCumulative', 'hospitalized'),
+  addOldTotal,
+  addTotalResults,
+)
 
 module.exports = {
+  addDailyDateChecked,
   addFips,
+  addHash,
   addName,
+  compatibility,
   dailyDate,
   screenshotDate,
   totalDate,

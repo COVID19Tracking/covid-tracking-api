@@ -1,12 +1,13 @@
 const _ = require('lodash/fp')
-const { setFieldWith } = require('prairie')
+const { copy, setField, setFieldWith } = require('prairie')
+const hash = require('object-hash')
 const {
   addOldTotal, addTotalResults, sheets,
 } = require('./sheets')
 const { addFips, totalDate } = require('./utils')
 const { handleCacheRequest } = require('../handlers/cache')
-const { sheetVals } = require('../handlers/sheets')
 const { handleResponse2 } = require('../handlers/responses')
+const { sheetVals } = require('../handlers/sheets')
 
 const fixState = _.flow(
   addOldTotal,
@@ -14,7 +15,9 @@ const fixState = _.flow(
   addFips,
   setFieldWith('dateModified', 'lastUpdateEt', totalDate),
   setFieldWith('dateChecked', 'checkTimeEt', totalDate),
-  _.set('notes', 'Please stop using the "total" field. Use "totalTestResults" instead.'),
+  copy('deaths', 'death'),
+  copy('cumulativeHospitalized', 'hospitalized'),
+  _.set('notes', 'Please stop using the "total" field. Use "totalTestResults" instead. Use "deaths" instead of "death".'),
 )
 const states = {
   ...sheets,
@@ -37,7 +40,7 @@ const grade = {
 
 const prepResult = _.flow(
   _.mergeAll,
-  _.values,
+  _.map(setField('hash', hash)),
   _.filter('state'),
 )
 const updateFunc = (args) => Promise.all([

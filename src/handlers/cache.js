@@ -8,13 +8,14 @@ const CACHE_LIFETIME = 18000 // 5 hours
 const NO_DATA = { error: true, message: 'No data available. Try changing query args.' }
 
 async function save(args, data, returnRaw = false) {
-  const { cache, cacheId } = args
+  const { cache, cacheId, ttl } = args
+  const expirationTtl = ttl === false ? undefined : Math.max(CACHE_LIFETIME, ttl)
   const dataStr = await toStr(args, _.isEmpty(data) ? NO_DATA : data)
-  return cache.put(cacheId, dataStr, { expirationTtl: CACHE_LIFETIME })
+  return cache.put(cacheId, dataStr, { expirationTtl })
     .then(() => cacheLog({
       id: cacheId,
       category: 'handleUpdate',
-      text: 'Saved item to cache',
+      text: `Saved item to cache ttl: ${expirationTtl}`,
     }))
     .then(() => (returnRaw ? data : dataStr)) // return data.
 }

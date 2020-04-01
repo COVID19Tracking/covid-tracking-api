@@ -4,6 +4,9 @@ const {
   mergeFieldsWith, move, propDo, setField, setFieldWith,
 } = require('prairie')
 const { screenshotDate } = require('./utils')
+const { handleCacheRequest, loadOrUpdateCached } = require('../handlers/cache')
+const { handleResponse2 } = require('../handlers/responses')
+const getXml = require('../handlers/xml')
 
 const isScreenshot = _.overEvery([
   propDo('Key', _.startsWith('state_screenshots/')),
@@ -37,22 +40,47 @@ const fixItem = _.flow(
       addDate,
     ),
   ),
-  _.omit(['StorageClass', 'Key', 'LastModified']),
+  _.omit(['ETag', 'StorageClass', 'Key', 'LastModified', 'filename']),
   move('Size', 'size'),
 )
 
+const getItems = _.get('ListBucketResult.Contents')
 const fixItems = _.flow(
-  _.get('ListBucketResult.Contents'),
+  getItems,
   _.filter(isScreenshot),
   _.map(fixItem),
 )
 
-module.exports = {
-  app: 'xml',
-  url: 'https://covid-data-archive.s3.us-east-2.amazonaws.com/',
-  // isValidResult: // Check if there are x number of items and they have a URL.
-  // search: true,
-  // prepResponse: // Get headers.
-  finalPrep: ({ search }, value) => (_.isEmpty(search) ? _.groupBy('state', value) : value),
-  fixItems,
+function getPage(marker) {
+  const baseUrl = 'https://covid-data-archive.s3.us-east-2.amazonaws.com/'
+  const url = `${baseUrl}?prefix=state_screenshots/&marker=${marker || ''}`
+  console.log(url)
+  return getXml({ url })
+}
+const hasMore = _.get('ListBucketResult.IsTruncated')
+const getMarker = _.flow(getItems, _.last, _.get('Key'))
+
+async function getPages(previousItems = [], marker) {
+  const result = await getPage(marker)
+  const items = previousItems.concat(fixItems(result))
+  return hasMore(result) ? getPages(items, getMarker(result)) : items
+}
+
+const getScreenshots = (args) => loadOrUpdateCached(
+  {
+    ...args,
+    ext: 'json',
+    search: null,
+    cacheId: 'screenshots',
+  },
+  () => getPages(),
+)
+
+function finalPrep({ search }) {
+  return (value) => (_.isEmpty(search) ? _.groupBy('state', value) : value)
+}
+
+module.exports = (event, args) => {
+  const updateData = () => getScreenshots(args).then(finalPrep(args))
+  return handleCacheRequest(event, args, updateData, handleResponse2)
 }

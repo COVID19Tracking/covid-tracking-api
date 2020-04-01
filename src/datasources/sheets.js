@@ -1,25 +1,16 @@
 const _ = require('lodash/fp')
-const {
-  setField, setFieldWith,
-} = require('prairie')
 const hash = require('object-hash')
 const {
-  addFips, addName, dailyDate,
+  addDailyDateChecked, addFips, addHash, addName, addOldTotal, addTotalResults, compatibility,
 } = require('./utils')
 
 const sheets = {
   app: 'sheets',
   worksheetId: '18oVRrHj3c183mHmq3m89_163yuYltLNlOmPerQ18E8w',
   sheetName: 'Sheet1',
-  key: global.GOOGLE_API_KEY,
+  key: global.GOOGLE_API_KEY || 'AIzaSyCq-ToIIsmRBGYuDVthThRVtqHPIa4bYiE',
   ttl: 300,
 }
-
-const addDailyDateChecked = setFieldWith('dateChecked', 'date', dailyDate)
-const sumFields = (fields) => _.flow(_.at(fields), _.sum)
-const addTotalResults = setField('totalTestResults', sumFields(['positive', 'negative']))
-const addOldTotal = setField('total', sumFields(['positive', 'negative', 'pending']))
-const addHash = setField('hash', hash)
 
 const newVals = {
   deathIncrease: null,
@@ -51,8 +42,7 @@ function fixDaily(items) {
     _.map(_.flow(
       addHash,
       addDailyDateChecked,
-      addTotalResults,
-      addOldTotal,
+      compatibility,
       addFips,
       (item) => {
         const increases = getNewVals(item, previous)
@@ -110,7 +100,12 @@ function fixUsCurrentItems(newValues, oldVals) {
   const newHash = hash(newValues[0])
   const oldHash = oldVals && oldVals[0].hash
   if (oldHash !== newHash) {
-    return [fixUsCurrent({ ...newValues[0], hash: newHash, lastModified: new Date() })]
+    return [fixUsCurrent({
+      ...newValues[0],
+      hash: newHash,
+      lastModified: new Date(),
+      death: newValues[0].deaths,
+    })]
   }
   return oldVals
 }

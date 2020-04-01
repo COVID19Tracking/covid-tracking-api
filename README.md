@@ -62,3 +62,7 @@ Install [cloudflare-worker-local](https://github.com/gja/cloudflare-worker-local
 `wrangler kv:key list --binding=COVID --env=production --prefix="/states.json"`
 `wrangler kv:key delete --binding=COVID --env=staging "/screenshots"`
 `wrangler kv:key delete --binding=COVID --env=production "/press"`
+
+#### Secrets
+
+`wrangler secret put GOOGLE_API_KEY --env=staging`

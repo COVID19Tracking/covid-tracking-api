@@ -5,6 +5,7 @@ const {
 } = require('./datasources/sheets')
 const { grade, states } = require('./datasources/states')
 const urls = require('./datasources/urls')
+const { statesPop } = require('./datasources/census')
 
 const StateAPI = require('./datasources/state')
 const resolvers = require('./resolvers')
@@ -34,7 +35,7 @@ const sheets = {
 // ROUTER
 
 const redirectMap = new Map([
-  ['/', 'https://covidtracking.com/api/'],
+  ['/', 'https://covidtracking.com/about/api'],
   ['/cdc/daily', cdcTests],
   ['/github', 'https://github.com/COVID19Tracking/covid-tracking-api'],
   ['/press', press],
@@ -42,6 +43,7 @@ const redirectMap = new Map([
   ['/states/daily', statesDaily],
   ['/states/info', statesInfo],
   ['/states/grade', grade],
+  ['/states/population', statesPop],
   ['/us', usCurrent],
   ['/us/daily', usDaily],
   ['/counties', { ...sheets, sheetName: 'Counties' }],

@@ -6,6 +6,8 @@ const fetchJson = (url) => fetch(
   { cf: { cacheEverything: true, cacheTtl: 120 } },
 ).then((res) => res.json())
 
+const getJson = _.flow(_.get('url'), fetchJson)
+
 const fetchXml = (url) => fetch(
   url,
   {
@@ -69,13 +71,16 @@ function cacheLog(item) {
       _inc: { count: 1 },
       where: { id: {_eq: $id }, category: {_eq: $category } }
     ) {
-    returning { count }
+    returning { count, text }
   }
 }`
   return postJson(
     'https://covid-tracking.herokuapp.com/v1/graphql',
     { query, variables: { item, category, id } },
-  ).then(console.log)
+  ).then(_.flow(
+    _.get('data'),
+    console.log,
+  ))
 }
 function refererLog(referer) {
   const val = referer || 'none'
@@ -104,6 +109,7 @@ module.exports = {
   fetchJson,
   fetchXml,
   fetchYaml,
+  getJson,
   log,
   postJson,
   processResult,
