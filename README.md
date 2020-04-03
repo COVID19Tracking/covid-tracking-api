@@ -1,5 +1,11 @@
 # 👷 Covid Tracking API
 
+**THIS CODE IS BEING MOVED TO THE WEBSITE REPOSITORY**
+
+PLEASE VISIT https://github.com/COVID19Tracking/website/tree/master/build
+
+---
+
 A [Cloudflare Worker](https://developers.cloudflare.com/workers/) that makes a requests to get the sheet info and then cleans it up a bit and returns an array of values.
 
 ## Initial Basic API
