@@ -1,7 +1,7 @@
 const _ = require('lodash/fp')
 const hash = require('object-hash')
 const {
-  addDailyDateChecked, addFips, addHash, addName, addOldTotal, addTotalResults, compatibility,
+  addDailyDateChecked, addFips, addHash, addName, compatibility,
 } = require('./utils')
 
 const sheets = {
@@ -88,10 +88,10 @@ const press = {
   fixItems: _.orderBy(['publishDate'], ['desc']),
   ttl: 180, // 3 minutes.
 }
+
 const fixUsCurrent = _.flow(
   _.set('notes', 'Please stop using the "total" and "posNeg" fields. Use "totalTestResults" instead.'),
-  addTotalResults,
-  addOldTotal,
+  compatibility,
 )
 
 // lastIncrementalUpdate
@@ -116,8 +116,6 @@ const usCurrent = {
   fixItems: fixUsCurrentItems,
 }
 module.exports = {
-  addOldTotal,
-  addTotalResults,
   cdcTests,
   press,
   sheets,

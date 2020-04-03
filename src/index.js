@@ -1,16 +1,14 @@
+const _ = require('lodash/fp')
+const { copy } = require('prairie')
 const handleRequest = require('./handlers')
 const cache = require('./kv-cache')
-const {
-  cdcTests, press, statesDaily, statesInfo, usCurrent, usDaily,
-} = require('./datasources/sheets')
-const { grade, states } = require('./datasources/states')
-const urls = require('./datasources/urls')
+
+// const urls = require('./datasources/urls')
 const { statesPop } = require('./datasources/census')
 
 const StateAPI = require('./datasources/state')
 const resolvers = require('./resolvers')
 const typeDefs = require('./schema')
-const screenshots = require('./datasources/screenshots')
 
 const dataSources = () => ({
   stateAPI: new StateAPI(),
@@ -25,30 +23,29 @@ const graphQLOptions = {
   app: 'apollo',
   kvCache: false,
 }
+const baseUrl = 'https://covidtracking.com/api/v1/'
+const getUrl = (path, ext) => `${baseUrl}${path}.${ext || 'json'}`
+const proxy = (path) => ({ app: 'json', url: getUrl(path) })
 
-const sheets = {
-  app: 'sheets',
-  worksheetId: '18oVRrHj3c183mHmq3m89_163yuYltLNlOmPerQ18E8w',
-  key: global.GOOGLE_API_KEY,
-}
-
-// ROUTER
-
+const compatibility = _.map(copy('totalTestResults', 'posNeg'))
 const redirectMap = new Map([
-  ['/', 'https://covidtracking.com/about/api'],
-  ['/cdc/daily', cdcTests],
+  ['/', 'https://covidtracking.com/api'],
   ['/github', 'https://github.com/COVID19Tracking/covid-tracking-api'],
-  ['/press', press],
-  ['/states', states],
-  ['/states/daily', statesDaily],
-  ['/states/info', statesInfo],
-  ['/states/grade', grade],
+  ['/cdc/daily', proxy('cdc/daily')],
+  ['/press', proxy('press')],
+  ['/states', proxy('states/current')],
+  ['/states/daily', proxy('states/daily')],
+  ['/states/info', proxy('states/info')],
+  ['/states/grade', proxy('states/grades')],
   ['/states/population', statesPop],
-  ['/us', usCurrent],
-  ['/us/daily', usDaily],
-  ['/counties', { ...sheets, sheetName: 'Counties' }],
-  ['/urls', urls],
-  ['/screenshots', screenshots],
+  ['/us', { ...proxy('us/current'), fixItems: compatibility }],
+  ['/us/daily', { ...proxy('us/daily'), fixItems: compatibility }],
+  ['/counties', proxy('counties')],
+  ['/urls', proxy('urls')],
+  ['/screenshots', {
+    ...proxy('states/screenshots'),
+    finalPrep: (args, values) => (_.isArray(values) ? _.groupBy('state', values) : values),
+  }],
   [graphQLOptions.baseEndpoint, graphQLOptions],
   // Playground.
   [graphQLOptions.playgroundEndpoint, { baseEndpoint: '/api/graphql', app: 'playground' }],

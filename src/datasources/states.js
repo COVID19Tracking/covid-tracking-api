@@ -2,16 +2,15 @@ const _ = require('lodash/fp')
 const { copy, setField, setFieldWith } = require('prairie')
 const hash = require('object-hash')
 const {
-  addOldTotal, addTotalResults, sheets,
+  sheets,
 } = require('./sheets')
-const { addFips, totalDate } = require('./utils')
+const { addFips, compatibility, totalDate } = require('./utils')
 const { handleCacheRequest } = require('../handlers/cache')
 const { handleResponse2 } = require('../handlers/responses')
 const { sheetVals } = require('../handlers/sheets')
 
 const fixState = _.flow(
-  addOldTotal,
-  addTotalResults,
+  compatibility,
   addFips,
   setFieldWith('dateModified', 'lastUpdateEt', totalDate),
   setFieldWith('dateChecked', 'checkTimeEt', totalDate),

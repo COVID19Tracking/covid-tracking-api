@@ -9,7 +9,9 @@ const NO_DATA = { error: true, message: 'No data available. Try changing query a
 
 async function save(args, data, returnRaw = false) {
   const { cache, cacheId, ttl } = args
-  const expirationTtl = ttl === false ? undefined : Math.max(CACHE_LIFETIME, ttl)
+  console.log('ttl', ttl)
+  // const expirationTtl = ttl === false ? undefined : Math.max(CACHE_LIFETIME, ttl)
+  const expirationTtl = Math.max(CACHE_LIFETIME, ttl || 60)
   const dataStr = await toStr(args, _.isEmpty(data) ? NO_DATA : data)
   return cache.put(cacheId, dataStr, { expirationTtl })
     .then(() => cacheLog({

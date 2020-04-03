@@ -8,7 +8,7 @@ const fixItem = _.flow(
 const statesPop = {
   app: 'json',
   url: 'https://api.census.gov/data/2019/pep/population?get=POP,LASTUPDATE&for=state',
-  ttl: false,
+  ttl: 60 * 60 * 24 * 7,
   fixItems: _.flow(
     _.tail,
     _.map(fixItem),
