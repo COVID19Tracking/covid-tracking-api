@@ -72,3 +72,20 @@ Install [cloudflare-worker-local](https://github.com/gja/cloudflare-worker-local
 #### Secrets
 
 `wrangler secret put GOOGLE_API_KEY --env=staging`
+
+## History
+
+Google often requires an API key or has some strange formatting. I just wanted an array of values that reflected the sheet rows. No long complicated URL.
+
+At first the worker was just a simple proxy, making an API request for every worker request.
+Then I added cf: { cacheEverything: true, cacheTtl: 120 } to the fetch() options so CF could cache the fetch result.
+Some endpoints requested XML from AWS and it takes some time to parse a really big XML file so using the CF Key Value storage for the parsed result was implemented.
+It was requested to offer a CSV download so that was added too.
+Then people wanted to be able to do some basic queries so I turned the search query args into an object and passed it to _.filter. That allows /states/daily?state=MN to return the state values for a specific state.
+It’s tricky to stay within the 50ms processing time limit when doing XML parsing or making large CSV files so Cloudflare had to increase our limits.
+We put a TTL limit (like an hour) on every file saved to cache. On a new request we return the previous generated result from the cache and then lookup the TTL of the item and if it’s more than 5 minutes old we make a new request and save it to the cache for next time. This way the user gets a fast result before we update an entry. If no user makes a request for an hour the cached item expires and the next request has to wait for a full process before response but that doesn’t happen for the popular endpoint/query options
+No volunteers were excited to help with the API because local development is too difficult.
+There’s no official tools for local development. There is https://github.com/gja/cloudflare-worker-local but it’s incomplete and has bugs. There is https://github.com/dollarshaveclub/cloudworker but is has a big “no longer actively maintained” message at the top of the page.
+Ultimately this caused the project to start building hundreds of static files (json/csv) for many of the most popular queries during the site build/compile process so it’s easier for others to help.
+I had a GraphQL endpoint for a bit but I think it’s easier to send the data into a postgres database and throw Hasura in front of it to handle auto GraphQL functionality.
+Want to edit or should I just send it to Cloudflare?
