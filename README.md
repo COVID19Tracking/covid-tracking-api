@@ -88,4 +88,3 @@ No volunteers were excited to help with the API because local development is too
 There’s no official tools for local development. There is https://github.com/gja/cloudflare-worker-local but it’s incomplete and has bugs. There is https://github.com/dollarshaveclub/cloudworker but is has a big “no longer actively maintained” message at the top of the page.
 Ultimately this caused the project to start building hundreds of static files (json/csv) for many of the most popular queries during the site build/compile process so it’s easier for others to help.
 I had a GraphQL endpoint for a bit but I think it’s easier to send the data into a postgres database and throw Hasura in front of it to handle auto GraphQL functionality.
-Want to edit or should I just send it to Cloudflare?
