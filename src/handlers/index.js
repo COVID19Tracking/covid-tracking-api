@@ -61,7 +61,12 @@ const handleRequest = (redirectMap, event, cache) => {
   if (app === 'sheets') return getApp(getSheet)
   if (app === 'xml') return getApp(getXml)
   if (app === 'yaml') return getApp(getYaml)
-  if (app === 'json') return getApp(getJson)
+  if (app === 'json') {
+    if (_.isEmpty(search) && !route.fixItems && !route.finalPrep) {
+      Response.redirect(route.url, 302)
+    }
+    return getApp(getJson)
+  }
   return fetch(request)
 }
 
