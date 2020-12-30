@@ -1,8 +1,9 @@
 # 👷 Covid Tracking API
 
-**THIS CODE IS BEING MOVED TO THE WEBSITE REPOSITORY**
+## Our API has moved to:
 
-PLEASE VISIT https://github.com/COVID19Tracking/website/tree/master/build
+- [API Build tool](https://github.com/COVID19Tracking/covid-public-api-build)
+- [API data repository](https://github.com/COVID19Tracking/covid-public-api)
 
 ---
 
